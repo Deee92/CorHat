@@ -1,5 +1,6 @@
 package furhatos.app.corhat.flow
-
+import furhatos.nlu.*
+import furhatos.app.corhat.nlu.*
 import furhatos.app.corhat.nlu.GetGeneralInfoIntent
 import furhatos.app.corhat.nlu.GiveSymptomsIntent
 import furhatos.nlu.common.*
@@ -65,3 +66,43 @@ val EndInteraction = state {
         goto(Idle)
     }
 }
+
+//Javad- start - testing facilities and directions////////////////////////////////////////////////////////////////////////////////////////////
+var a : Centers? = null
+var b : Day? = null
+val Ask_availability : State = state(Interaction) {
+    onEntry {
+        furhat.ask("Alright, when are you available for doing the test?")
+    }
+
+    onResponse<Availability> {
+        b =  it.intent.day
+        goto(Choose_center)
+    }
+}
+val Choose_center : State = state(Interaction) {
+    onEntry {
+        furhat.say("${b}, that is great !")
+        furhat.say("You are welcomed to do your test in ${Available_centers(b?.text).optionsToText()} on ${b}")
+        furhat.ask("Now, Please let me know which center you prefer to do your test.")
+    }
+    onResponse<Show_direction> {
+        a = it.intent.center
+        goto(give_address)
+    }
+
+}
+val give_address : State = state(Interaction) {
+    onEntry {
+        furhat.say("Good choice!")
+        furhat.ask("Do you want me to help with the directions to ${a} ?")
+    }
+    onResponse<Yes> {
+        furhat.say("alright!, to get to the ${a}, you can follow ${Center_Direction(a?.text).optionsToText()}")
+    }
+    onResponse<No> {
+        furhat.say("Great! Then good luck with your test!")
+    }
+
+}
+//Javad - end - testing facilities and directions////////////////////////////////////////////////////////////////////////////////////////////
