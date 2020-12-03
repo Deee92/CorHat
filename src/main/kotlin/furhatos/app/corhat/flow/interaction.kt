@@ -12,7 +12,7 @@ val Start : State = state(Interaction) {
     }
 
     onResponse<Yes>{
-        furhat.say("You came to the right place!");
+        furhat.say("You came to the right place!")
         goto(GetQuery)
     }
 
@@ -35,7 +35,7 @@ val GetQuery = state(parent = Start) {
     }
 
     onResponse<GiveSymptomsIntent>{
-        furhat.say("Sorry to hear that!");
+        furhat.say("Sorry to hear that!")
         goto(GetContactHistory)
     }
 }
@@ -47,12 +47,13 @@ val GetContactHistory = state {
     }
 
     onResponse<Yes>{
-        furhat.say("You should consider getting a COVID-19 test.")
+        furhat.say("If you feel unwell, and have recently been in contact with someone who tested positive, you should consider getting a COVID-19 test.")
         goto(EndInteraction)
     }
 
     onResponse<No>{
-        furhat.say("You should self-isolate and monitor your symptoms. You should consider getting a COVID-19 test if symptoms persist or worsen.")
+        furhat.say("If you feel unwell, but have not been in contact with someone who tested positive, you should self-isolate and monitor your symptoms.")
+        furhat.say("Please consider getting a COVID-19 test if your symptoms persist or worsen.")
         goto(EndInteraction)
     }
 }
