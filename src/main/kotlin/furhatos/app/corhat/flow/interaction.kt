@@ -22,22 +22,41 @@ val Start : State = state(Interaction) {
     }
 }
 
-// Placeholder answers :)
 val GetQuery = state(parent = Start) {
     onEntry {
-        furhat.ask("How can I help you today?")
+        furhat.ask("Are you feeling unwell, or do you need general information about COVID-19?")
     }
 
     onResponse<GetGeneralInfoIntent>{
-        furhat.say("COVID-19 or the novel Coronavirus is a bad disease");
+        furhat.say("COVID-19 or the novel Coronavirus is a contagious disease.")
+        furhat.say("Possible symptoms include fever, dry cough, a loss in the sense of smell or taste, fatigue, or breathing difficulties.")
+        furhat.say("The best way to avoid being infected by COVID-19 is to follow social-distancing norms and good hand-hygiene.")
         goto(EndInteraction)
     }
 
     onResponse<GiveSymptomsIntent>{
         furhat.say("Sorry to hear that!");
+        goto(GetContactHistory)
+    }
+}
+
+val GetContactHistory = state {
+    onEntry {
+        furhat.ask("Do you think you may have been in contact with someone at work, or in your social circle, who tested positive for COVID-19 within the last seven days?")
+        goto(Idle)
+    }
+
+    onResponse<Yes>{
+        furhat.say("You should consider getting a COVID-19 test.")
+        goto(EndInteraction)
+    }
+
+    onResponse<No>{
+        furhat.say("You should self-isolate and monitor your symptoms. You should consider getting a COVID-19 test if symptoms persist or worsen.")
         goto(EndInteraction)
     }
 }
+
 
 val EndInteraction = state {
     onEntry {

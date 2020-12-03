@@ -9,11 +9,7 @@ class GiveSymptomsIntent : Intent() {
         return listOf(
                 "I am feeling unwell",
                 "I am feeling sick",
-                "I have a fever",
-                "I have symptoms",
-                "My throat is sore",
-                "I cannot smell",
-                "I cannot taste"
+                "I have symptoms"
         )
     }
 }
