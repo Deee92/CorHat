@@ -22,16 +22,16 @@ class Centers : EnumEntity(stemming = true, speechRecPhrases = true) {
 }
 
 //Our Directions entity
-class Center_Direction(val day : String ? = null) : EnumEntity(stemming = true, speechRecPhrases = true) {
+class Center_Direction(val center : String ? = null) : EnumEntity(stemming = true, speechRecPhrases = true) {
     override fun getEnum(lang: Language): List<String> {
-        print(day)
-        if (day== "Center 1"){
+        print(center)
+        if (center== "Center 1"){
             return listOf("Address 1")
         }
-        if (day== "Center 2"){
+        if (center== "Center 2"){
             return listOf("Address 2")
         }
-        if (day== "Center 3"){
+        if (center== "Center 3"){
             return listOf("Address 3")
         }
         else {
