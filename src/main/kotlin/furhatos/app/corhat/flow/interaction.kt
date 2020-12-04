@@ -44,17 +44,30 @@ val GetQuery = state(parent = Start) {
 val GetContactHistory = state {
     onEntry {
         furhat.ask("Do you think you may have been in contact with someone at work, or in your social circle, who tested positive for COVID-19 within the last seven days?")
-        goto(Idle)
     }
 
     onResponse<Yes>{
         furhat.say("If you feel unwell, and have recently been in contact with someone who tested positive, you should consider getting a COVID-19 test.")
-        goto(EndInteraction)
+        goto(GetTestInterest)
     }
 
     onResponse<No>{
         furhat.say("If you feel unwell, but have not been in contact with someone who tested positive, you should self-isolate and monitor your symptoms.")
         furhat.say("Please consider getting a COVID-19 test if your symptoms persist or worsen.")
+        goto(EndInteraction)
+    }
+}
+
+val GetTestInterest = state {
+    onEntry {
+        furhat.ask("Would you like information on COVID-19 testing?")
+    }
+
+    onResponse<Yes> {
+        goto(GetAvailability)
+    }
+
+    onResponse<No> {
         goto(EndInteraction)
     }
 }
@@ -70,17 +83,17 @@ val EndInteraction = state {
 //Javad- start - testing facilities and directions////////////////////////////////////////////////////////////////////////////////////////////
 var a : Centers? = null
 var b : Day? = null
-val Ask_availability : State = state(Interaction) {
+val GetAvailability : State = state(Interaction) {
     onEntry {
         furhat.ask("Alright, when are you available for doing the test?")
     }
 
     onResponse<Availability> {
         b =  it.intent.day
-        goto(Choose_center)
+        goto(ChooseCenter)
     }
 }
-val Choose_center : State = state(Interaction) {
+val ChooseCenter : State = state(Interaction) {
     onEntry {
         furhat.say("${b}, that is great !")
         furhat.say("You are welcomed to do your test in ${Available_centers(b?.text).optionsToText()} on ${b}")
@@ -99,9 +112,11 @@ val give_address : State = state(Interaction) {
     }
     onResponse<Yes> {
         furhat.say("alright!, to get to the ${a}, you can follow ${Center_Direction(a?.text).optionsToText()}")
+        goto(EndInteraction)
     }
     onResponse<No> {
         furhat.say("Great! Then good luck with your test!")
+        goto(EndInteraction)
     }
 
 }
