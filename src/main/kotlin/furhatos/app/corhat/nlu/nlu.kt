@@ -103,3 +103,68 @@ class Show_direction(val center : Centers ? = null) : Intent() {
 }
 //Javad - end - testing facilities and directions////////////////////////////////////////////////////////////////////////////////////////////
 
+class Test : EnumEntity(){
+    override fun getEnum(lang: Language): List<String> {
+        return listOf("PCR",
+                "antibody")
+    }
+}
+
+class Person(var person : String? = null) : EnumEntity(stemming = true, speechRecPhrases = true){
+    override fun getEnum(lang: Language): List<String> {
+        return listOf("contact: someone, father, mom, dad, mother, sister, brother, parents, family, neighbor, person, people, friend",
+                "@person")
+    }
+}
+
+class ListOfSymptom : ListEntity<Symptom>()
+
+class HealthCondition : EnumEntity() {
+    override fun getEnum(lang: Language): List<String> {
+        return listOf("good: good, health, well")
+    }
+}
+class Symptom : EnumEntity() {
+    override fun getEnum(lang: Language): List<String> {
+        return listOf("headache: headache, pain in head",
+                "sore throat: sore throat, dry throat, throat pain",
+                "fever: fever, high temperature",
+                "cough",
+                "difficulty breathing: hard to breathe, can't breathe, difficult breathing",
+                "illness: illness, bad, feel bad, nausea, pain, sick")
+    }
+}
+
+class Timeunit : EnumEntity(stemming = true, speechRecPhrases = true) {
+    override fun getEnum(lang: Language): List<String> {
+        return listOf("a day: a day, yesterday, last night, today","a week: a week, last week, last friday, this monday","month","day","week")
+    }
+}
+class Duration(
+        var count : Number? = null,
+        var timeunit : Timeunit? = null) : ComplexEnumEntity() {
+    override fun getEnum(lang: Language): List<String> {
+        return listOf("@count @timeunit",
+                "@timeunit")
+    }
+
+    override fun toText(): String {
+        if (count == null) {
+            if (timeunit?.value == "a day"){
+                count = Number(1)
+                timeunit?.value = "day"
+            }
+            if (timeunit?.value == "a week"){
+                count = Number(1)
+                timeunit?.value = "week"
+            }
+        }
+        return generate("$count" + if (count?.value == 1) timeunit?.value else "${timeunit?.value}" + "s")
+    }
+}
+
+class Covid : EnumEntity() {
+    override fun getEnum(lang: Language): List<String> {
+        return listOf("Covid-19: covid, covid-19, covid 19, corona, corona virus, coronavirus")
+    }
+}

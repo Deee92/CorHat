@@ -24,7 +24,7 @@ val Idle: State = state {
 }
 
 val Interaction: State = state {
-
+    var silences = 0
     onUserLeave(instant = true) {
         if (users.count > 0) {
             if (it == users.current) {
@@ -42,4 +42,15 @@ val Interaction: State = state {
         furhat.glance(it)
     }
 
+    onNoResponse {
+        silences++
+        when (silences)  {
+            1 -> furhat.ask("I didn't hear anything")
+            2 -> furhat.ask("I still didn't hear you. Could you speak up please?")
+            else -> {
+                furhat.say("Still didn't hear anything")
+                reentry()
+            }
+        }
+    }
 }
