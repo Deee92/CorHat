@@ -219,6 +219,19 @@ val EndInteraction = state {
     }
 }
 
+// Teodor
+var c : City? = null
+val GetCityLocation : State = state(Interaction) {
+    onEntry {
+        furhat.ask("What city are you in?")
+    }
+
+    onResponse<Location> {
+        c = it.intent.city
+        goto(GetAvailability)
+    }
+}
+
 //Javad- start - testing facilities and directions////////////////////////////////////////////////////////////////////////////////////////////
 var a : Centers? = null
 var b : Day? = null
