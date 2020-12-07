@@ -5,7 +5,7 @@ import furhatos.nlu.*
 import furhatos.nlu.common.*
 import furhatos.nlu.common.Number
 import furhatos.records.GenericRecord
-//Javad - start - testing facilities and directions////////////////////////////////////////////////////////////////////////////////////////////
+//start - testing facilities and directions////////////////////////////////////////////////////////////////////////////////////////////
 
 // Our City entity
 class City : EnumEntity(stemming = true, speechRecPhrases = true){
@@ -227,7 +227,7 @@ class Show_direction(val center : Centers ? = null) : Intent() {
         )
     }
 }
-//Javad - end - testing facilities and directions////////////////////////////////////////////////////////////////////////////////////////////
+//end - testing facilities and directions////////////////////////////////////////////////////////////////////////////////////////////
 
 class Test : EnumEntity(){
     override fun getEnum(lang: Language): List<String> {
