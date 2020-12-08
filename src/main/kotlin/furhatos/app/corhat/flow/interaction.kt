@@ -34,10 +34,14 @@ val Questions: State = state(parent = Interaction){
     }
     onResponse {
         nomatch++
+        // TODO: Make shorter
+        furhat.say("What?")
+        /*
         if (nomatch > 1)
             furhat.say("I'm afraid I don't know that, for more information about covid please visit www.1177.se")
         else
             furhat.say("sorry, I dont have information on that question, you are welcome with other questions")
+         */
         reentry()
     }
 }
@@ -194,11 +198,13 @@ val RequestDuration :State = state(parent = SubInteraction) {
     }
 }
 
+// TODO: Separate confirm from recommend.
+// TODO: Need to continue from here.
 val ConfirmHealthStatus : State = state(parent = SubInteraction) {
     onEntry{
         if (users.current.contact.person?.value != null){
             if (users.current.health.duration?.timeunit?.value == "week" && users.current.health.duration?.count?.value!! >= 2 ) {
-                furhat.say("I can see that you have contact history and you've been experiencing symptoms over 2 weeks, in this case I'd recommend you to do an antibody test test")
+                furhat.say("I can see that you have contact history and you've been experiencing symptoms over 2 weeks, in this case I'd recommend you to do an antibody test")
             }
             else{
                 furhat.say("You have previous contact with covid patient and your symptoms has been less than 2 weeks, I'd recommend you with a PCR test")
@@ -235,6 +241,7 @@ val EndInteraction = state {
     }
 }
 
+// TODO: Untested
 var c : City? = null
 val GetCityLocation : State = state(parent = Interaction) {
     onEntry {
@@ -243,7 +250,17 @@ val GetCityLocation : State = state(parent = Interaction) {
 
     onResponse<Location> {
         c = it.intent.city
+        furhat.ask("${c?.text}?")
+        reentry()
+    }
+    onResponse<Yes> {
+        furhat.say ( "Alright!" )
         goto(GetAvailability)
+    }
+    onResponse<No> {
+        c = null
+        furhat.ask ( "Sorry, where then?" )
+        reentry()
     }
 }
 
@@ -252,7 +269,7 @@ var a : Centers? = null
 var b : Day? = null
 val GetAvailability : State = state(parent = Interaction) {
     onEntry {
-        furhat.ask("Alright, when are you available for doing the test?")
+        furhat.ask("When are you available for doing the test?")
     }
 
     onResponse<Availability> {
@@ -263,14 +280,14 @@ val GetAvailability : State = state(parent = Interaction) {
 val ChooseCenter : State = state(parent = Interaction) {
     onEntry {
         furhat.say("${b}, that is great !")
-        furhat.say("You are welcomed to do your test in ${Available_centers(b?.text).optionsToText()} on ${b}")
+        furhat.say("You are welcome to test in ${Available_centers(b?.text,c?.text).optionsToText()} on ${b}")
+        // TODO: Wasn't center covered?
         furhat.ask("Now, Please let me know which center you prefer to do your test.")
     }
     onResponse<Show_direction> {
         a = it.intent.center
         goto(give_address)
     }
-
 }
 val give_address : State = state(parent = Interaction) {
     onEntry {
@@ -285,6 +302,5 @@ val give_address : State = state(parent = Interaction) {
         furhat.say("Great! Then good luck with your test!")
         goto(EndInteraction)
     }
-
 }
 // end - testing facilities and directions ////////////

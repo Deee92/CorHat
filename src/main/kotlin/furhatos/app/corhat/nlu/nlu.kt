@@ -15,8 +15,8 @@ class City : EnumEntity(stemming = true, speechRecPhrases = true){
         return listOf("Stockholm", "Linköping", "Gothenburg", "Uppsala")
     }
 }
-// Our Day entity.
 
+// Our Day entity.
 class Day : EnumEntity(stemming = true, speechRecPhrases = true) {
     override fun getEnum(lang: Language): List<String> {
         return listOf("Monday", "Tuesday", "Wednesday", "Thursday",	"Friday", "Saturday", "Sunday")
@@ -95,6 +95,7 @@ class Center_Direction(val center : String ? = null) : EnumEntity(stemming = tru
 }
 
 // Our Available Centers entity.
+// TODO: Require both
 class Available_centers(val day : String ? = null, val city : String ? = null)  : EnumEntity(stemming = true, speechRecPhrases = true) {
     override fun getEnum(lang: Language): List<String> {
         print(day)
