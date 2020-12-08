@@ -5,7 +5,7 @@ import furhatos.nlu.common.*
 import furhatos.flow.kotlin.*
 import furhatos.gestures.Gestures
 
-val Questions: State = state(Interaction){
+val Questions: State = state(parent = Interaction){
     var nomatch = 0
     onResponse<AskTestTypeIntent> {
         if (it.intent.test?.value == "antibody") {
@@ -92,7 +92,7 @@ val Start2 : State = state(parent = Questions) {
     }
 }
 
-val ChooseService : State = state {
+val ChooseService : State = state(parent = SubInteraction) {
     onEntry { furhat.listen() }
     onResponse<BookTest> {
         goto(TestInit)
@@ -117,7 +117,7 @@ val GetInformation : State = state(parent = Questions) {
     }
 }
 
-val TestInit : State = state() {
+val TestInit : State = state(parent = SubInteraction) {
     onEntry {
         random(furhat.ask ( "To start with, please describe your current health condition." ),
                 furhat.ask ( "I see, you want a test, how do you feel currently?" ))
@@ -129,7 +129,7 @@ val TestInit : State = state() {
     }
 }
 
-val HealthCheck : State = state {
+val HealthCheck : State = state(parent = SubInteraction) {
     onEntry {
         val health = users.current.health
         val contact = users.current.contact
@@ -150,7 +150,7 @@ val HealthCheck : State = state {
     }
 }
 
-val RequestContact : State = state {
+val RequestContact : State = state(parent = SubInteraction) {
     onEntry { furhat.ask("Have you had any contact with person who get infected by covid-19") }
     onReentry { furhat.ask("I see, please tell me more about your contact history?") }
     onResponse<DescribeContactHistory> {
@@ -168,7 +168,7 @@ val RequestContact : State = state {
     }
 }
 
-val RequestSymptom : State = state {
+val RequestSymptom : State = state(parent = SubInteraction) {
     onEntry {
         furhat.ask("How do you feel right now, what is your symptoms?")
     }
@@ -182,7 +182,7 @@ val RequestSymptom : State = state {
     }
 }
 
-val RequestDuration :State = state {
+val RequestDuration :State = state(parent = SubInteraction) {
     onEntry {
         furhat.ask("Ok, can you tell me for how long you've been experiencing the symptoms?")
     }
@@ -194,7 +194,7 @@ val RequestDuration :State = state {
     }
 }
 
-val ConfirmHealthStatus : State = state {
+val ConfirmHealthStatus : State = state(parent = SubInteraction) {
     onEntry{
         if (users.current.contact.person?.value != null){
             if (users.current.health.duration?.timeunit?.value == "week" && users.current.health.duration?.count?.value!! >= 2 ) {
@@ -236,7 +236,7 @@ val EndInteraction = state {
 }
 
 var c : City? = null
-val GetCityLocation : State = state(Interaction) {
+val GetCityLocation : State = state(parent = Interaction) {
     onEntry {
         furhat.ask("What city are you in?")
     }
@@ -250,7 +250,7 @@ val GetCityLocation : State = state(Interaction) {
 // start - testing facilities and directions ////////////
 var a : Centers? = null
 var b : Day? = null
-val GetAvailability : State = state(Interaction) {
+val GetAvailability : State = state(parent = Interaction) {
     onEntry {
         furhat.ask("Alright, when are you available for doing the test?")
     }
@@ -260,7 +260,7 @@ val GetAvailability : State = state(Interaction) {
         goto(ChooseCenter)
     }
 }
-val ChooseCenter : State = state(Interaction) {
+val ChooseCenter : State = state(parent = Interaction) {
     onEntry {
         furhat.say("${b}, that is great !")
         furhat.say("You are welcomed to do your test in ${Available_centers(b?.text).optionsToText()} on ${b}")
@@ -272,7 +272,7 @@ val ChooseCenter : State = state(Interaction) {
     }
 
 }
-val give_address : State = state(Interaction) {
+val give_address : State = state(parent = Interaction) {
     onEntry {
         furhat.say("Good choice!")
         furhat.ask("Do you want me to help with the directions to ${a} ?")

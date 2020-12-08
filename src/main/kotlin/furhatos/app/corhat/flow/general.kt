@@ -7,6 +7,9 @@ import java.io.File
 val Idle: State = state {
 
     init {
+        val logFile = File("logs/flowlogger.txt") // Under skill directory
+        flowLogger.start(logFile) // Start the logger
+
         furhat.setVoice(Language.ENGLISH_US, Gender.MALE)
 //        furhat.setVoice(Language.ENGLISH_GB, "Brian", Gender.MALE)
         if (users.count > 0) {
@@ -47,7 +50,7 @@ val Interaction: State = state {
 
     onNoResponse {
         silences++
-        when (silences)  {
+        when (silences) {
             1 -> furhat.ask("I didn't hear anything")
             2 -> furhat.ask("I still didn't hear you. Could you speak up please?")
             else -> {
@@ -57,4 +60,8 @@ val Interaction: State = state {
             }
         }
     }
+}
+
+/** Dummy state for inheritance */
+val SubInteraction: State = state(parent = Interaction) {
 }
