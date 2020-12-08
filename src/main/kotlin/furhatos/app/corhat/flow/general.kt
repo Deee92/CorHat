@@ -11,7 +11,7 @@ val Idle: State = state {
         flowLogger.start(logFile) // Start the logger
 
         furhat.setVoice(Language.ENGLISH_US, Gender.MALE)
-//        furhat.setVoice(Language.ENGLISH_GB, "Brian", Gender.MALE)
+        // furhat.setVoice(Language.ENGLISH_GB, "Brian", Gender.MALE)
         if (users.count > 0) {
             furhat.attend(users.random)
             goto(Start)
@@ -51,7 +51,7 @@ val Interaction: State = state {
     onNoResponse {
         silences++
         when (silences) {
-            1 -> furhat.ask("I didn't hear anything")
+            1 -> furhat.ask("I didn't hear anything. Can you say that again?")
             2 -> furhat.ask("I still didn't hear you. Could you speak up please?")
             else -> {
                 // TODO: Why nagging?

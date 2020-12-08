@@ -1,33 +1,28 @@
 package furhatos.app.corhat.nlu
 
-import furhatos.nlu.TextGenerator
 import furhatos.util.Language
 import furhatos.nlu.*
-import furhatos.nlu.common.*
 import furhatos.nlu.common.Number
-import furhatos.records.GenericRecord
 
-//start - testing facilities and directions////////////////////////////////////////////////////////////////////////////////////////////
-
-// Our City entity
-class City : EnumEntity(stemming = true, speechRecPhrases = true){
+// City entity
+class City : EnumEntity(stemming = true, speechRecPhrases = true) {
     override fun getEnum(lang: Language): List<String> {
         return listOf("Stockholm", "Linköping", "Gothenburg", "Uppsala")
     }
 }
 
-// Our Day entity.
+// Day entity
 class Day : EnumEntity(stemming = true, speechRecPhrases = true) {
     override fun getEnum(lang: Language): List<String> {
-        return listOf("Monday", "Tuesday", "Wednesday", "Thursday",	"Friday", "Saturday", "Sunday")
+        return listOf("Monday", "Tuesday", "Wednesday", "Thursday", "Friday", "Saturday", "Sunday")
     }
 }
 
-//Our Centers entity
+// Centers entity
 class Centers : EnumEntity(stemming = true, speechRecPhrases = true) {
     override fun getEnum(lang: Language): List<String> {
         // Center 1-4 Gothenburg
-        return listOf("Center 1","Center 2","Center 3","Center 4",
+        return listOf("Center 1", "Center 2", "Center 3", "Center 4",
                 // Center 5-8 Stockholm
                 "Center 5", "Center 6", "Center 7", "Center 8",
                 // Center 9-12 Linköping
@@ -38,68 +33,67 @@ class Centers : EnumEntity(stemming = true, speechRecPhrases = true) {
     }
 }
 
-//Our Directions entity
-class Center_Direction(val center : String ? = null) : EnumEntity(stemming = true, speechRecPhrases = true) {
+// Directions entity
+class Center_Direction(val center: String? = null) : EnumEntity(stemming = true, speechRecPhrases = true) {
     override fun getEnum(lang: Language): List<String> {
         print(center)
-        if (center== "Center 1"){
-            return listOf("Adress 1")
+        if (center == "Center 1") {
+            return listOf("Address 1")
         }
-        if (center== "Center 2"){
+        if (center == "Center 2") {
             return listOf("Address 2")
         }
-        if (center== "Center 3"){
+        if (center == "Center 3") {
             return listOf("Address 3")
         }
-        if (center== "Center 4"){
+        if (center == "Center 4") {
             return listOf("Address 4")
         }
-        if (center== "Center 5"){
+        if (center == "Center 5") {
             return listOf("Address 5")
         }
-        if (center== "Center 6"){
+        if (center == "Center 6") {
             return listOf("Address 6")
         }
-        if (center== "Center 7"){
+        if (center == "Center 7") {
             return listOf("Address 7")
         }
-        if (center== "Center 8"){
+        if (center == "Center 8") {
             return listOf("Address 8")
         }
-        if (center== "Center 9"){
+        if (center == "Center 9") {
             return listOf("Address 9")
         }
-        if (center== "Center 10"){
+        if (center == "Center 10") {
             return listOf("Address 10")
         }
-        if (center== "Center 11"){
+        if (center == "Center 11") {
             return listOf("Address 11")
         }
-        if (center== "Center 12"){
+        if (center == "Center 12") {
             return listOf("Address 12")
         }
-        if (center== "Center 13"){
+        if (center == "Center 13") {
             return listOf("Address 13")
         }
-        if (center== "Center 14"){
+        if (center == "Center 14") {
             return listOf("Adress 14")
         }
-        if (center== "Center 15"){
+        if (center == "Center 15") {
             return listOf("Adress 15")
-        }
-        else{
+        } else {
             return listOf("Adress 16")
         }
     }
 
 }
 
-// Our Available Centers entity.
+// Available Centers entity.
 // TODO: Require both
-class Available_centers(val day : String ? = null, val city : String ? = null)  : EnumEntity(stemming = true, speechRecPhrases = true) {
+class Available_centers(val day: String? = null, val city: String? = null) : EnumEntity(stemming = true, speechRecPhrases = true) {
     override fun getEnum(lang: Language): List<String> {
         print(day)
-        if (city == "Gothenburg"){
+        if (city == "Gothenburg") {
             if (day == "Monday") {
                 return listOf("Center 1", "Center 2")
             }
@@ -121,7 +115,7 @@ class Available_centers(val day : String ? = null, val city : String ? = null)  
                 return listOf("Center 2", "Center 4")
             }
         }
-        if (city == "Stockholm"){
+        if (city == "Stockholm") {
             if (day == "Monday") {
                 return listOf("Center 5", "Center 6")
             }
@@ -144,7 +138,7 @@ class Available_centers(val day : String ? = null, val city : String ? = null)  
             }
         }
 
-        if (city == "Linkoping"){
+        if (city == "Linkoping") {
             if (day == "Monday") {
                 return listOf("Center 9", "Center 10")
             }
@@ -165,8 +159,7 @@ class Available_centers(val day : String ? = null, val city : String ? = null)  
             } else {
                 return listOf("Center 10", "Center 12")
             }
-        }
-        else {
+        } else {
             if (day == "Monday") {
                 return listOf("Center 13", "Center 14")
             }
@@ -191,22 +184,23 @@ class Available_centers(val day : String ? = null, val city : String ? = null)  
     }
 }
 
-// Our Locaction intent
-class Location(val city : City ? = null) : Intent() {
+// Location intent
+class Location(val city: City? = null) : Intent() {
     override fun getExamples(lang: Language): List<String> {
         return listOf("@city",
-                "Im in @city",
+                "I'm in @city",
                 "I live in @city",
-                "Im from @city")
+                "I'm from @city"
+        )
     }
 }
 
-// Our Availability intent
-class Availability(val day : Day ? = null) : Intent() {
+// Availability intent
+class Availability(val day: Day? = null) : Intent() {
     override fun getExamples(lang: Language): List<String> {
         return listOf("@day",
                 "I can do it on @day",
-                "I would like test on @day",
+                "I would like to test on @day",
                 "I can test on @day",
                 "I can do it on @day this week",
                 "I would like test on @day this week",
@@ -218,11 +212,11 @@ class Availability(val day : Day ? = null) : Intent() {
     }
 }
 
-//Our Direction intent
-class Show_direction(val center : Centers ? = null) : Intent() {
+// Direction intent
+class Show_direction(val center: Centers? = null) : Intent() {
     override fun getExamples(lang: Language): List<String> {
         return listOf("@center",
-                "I'd rather to go to @center",
+                "I'd rather go to @center",
                 "I would like test in @center",
                 "I can test in @center",
                 "I can do it in @center",
@@ -230,19 +224,20 @@ class Show_direction(val center : Centers ? = null) : Intent() {
         )
     }
 }
-//end - testing facilities and directions////////////////////////////////////////////////////////////////////////////////////////////
 
-class Test : EnumEntity(){
+class Test : EnumEntity() {
     override fun getEnum(lang: Language): List<String> {
         return listOf("PCR",
-                "antibody")
+                "antibody"
+        )
     }
 }
 
-class Person(var person : String? = null) : EnumEntity(stemming = true, speechRecPhrases = true){
+class Person(var person: String? = null) : EnumEntity(stemming = true, speechRecPhrases = true) {
     override fun getEnum(lang: Language): List<String> {
-        return listOf("contact: someone, father, mom, dad, mother, sister, brother, parents, family, neighbor, person, people, friend",
-                "@person")
+        return listOf("contact: someone, father, mom, dad, mother, sister, brother, parents, family, neighbor, person, people, colleague, partner, husband, wife, friend",
+                "@person"
+        )
     }
 }
 
@@ -253,39 +248,43 @@ class HealthCondition : EnumEntity() {
         return listOf("good: good, health, well")
     }
 }
+
 class Symptom : EnumEntity() {
     override fun getEnum(lang: Language): List<String> {
-        return listOf("headache: headache, pain in head",
+        return listOf("head ache: head ache, pain in head",
                 "sore throat: sore throat, dry throat, throat pain",
                 "fever: fever, high temperature",
-                "cough",
-                "difficulty breathing: hard to breathe, can't breathe, difficult breathing",
-                "illness: illness, bad, feel bad, nausea, pain, sick")
+                "cough: cough, dry cough",
+                "difficulty breathing: difficulty breathing, hard to breathe, can't breathe",
+                "fatigue: fatigue, illness, bad, feel bad, nausea, pain, sick, unwell"
+        )
     }
 }
 
 class Timeunit : EnumEntity(stemming = true, speechRecPhrases = true) {
     override fun getEnum(lang: Language): List<String> {
         return listOf("a day: a day, yesterday, last night, today",
-                "a week: a week, last week, last friday, this monday","month","day","week")
+                "a week: a week, last week, last friday, this monday", "month", "day", "week"
+        )
     }
 }
 
-class Duration(
-        var count : Number? = null,
-        var timeunit : Timeunit? = null) : ComplexEnumEntity() {
+class Duration(var count: Number? = null,
+        var timeunit: Timeunit? = null) : ComplexEnumEntity() {
+
     override fun getEnum(lang: Language): List<String> {
         return listOf("@count @timeunit",
-                "@timeunit")
+                "@timeunit"
+        )
     }
 
     override fun toText(): String {
         if (count == null) {
-            if (timeunit?.value == "a day"){
+            if (timeunit?.value == "a day") {
                 count = Number(1)
                 timeunit?.value = "day"
             }
-            if (timeunit?.value == "a week"){
+            if (timeunit?.value == "a week") {
                 count = Number(1)
                 timeunit?.value = "week"
             }
@@ -296,6 +295,6 @@ class Duration(
 
 class Covid : EnumEntity() {
     override fun getEnum(lang: Language): List<String> {
-        return listOf("Covid-19: covid, covid-19, covid 19, corona, corona virus, coronavirus")
+        return listOf("COVID-19: covid, covid-19, covid 19, corona, corona virus, coronavirus, SARS COV 2")
     }
 }
