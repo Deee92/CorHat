@@ -7,7 +7,11 @@ import furhatos.nlu.common.Number
 // City entity
 class City : EnumEntity(stemming = true, speechRecPhrases = true) {
     override fun getEnum(lang: Language): List<String> {
-        return listOf("Stockholm", "Linköping", "Gothenburg", "Uppsala")
+        return listOf("Stockholm",
+                "Linköping",
+                "Gothenburg",
+                "Uppsala: Uppsala, Uppsaala",
+                "Lund: Lund, Loond")
     }
 }
 

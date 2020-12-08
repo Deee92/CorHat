@@ -8,9 +8,13 @@ import furhatos.util.Language
 class DescribeContactHistory(var covid: Covid? = null, var person: Person? = null) : Intent(), TextGenerator {
     override fun getExamples(lang: Language): List<String> {
         return listOf("I've had contact with @person who has @covid",
-                "I've been in touch  with @person who tested positive for @covid",
+                "I've been in touch with @person who tested positive for @covid",
                 "my @person has @covid",
-                "my @person has tested positive for @covid"
+                "my @person tested positive",
+                "my @person tested positive for @covid",
+                "my @person has tested positive for @covid",
+                "I was in contact with my @person who had @covid",
+                "I was in contact with my @person who tested positive for @covid"
         )
     }
 
@@ -145,6 +149,16 @@ class GetInfo : Intent() {
                 "I need some general information about COVID-19",
                 "I want to have some general information about COVID-19",
                 "What is COVID-19?"
+        )
+    }
+}
+
+class GovHelpline : Intent() {
+    override fun getExamples(lang: Language): List<String> {
+        return listOf("Government helpline",
+                "helpline",
+                "Where can I call for official guidelines",
+                "I need the government helpline"
         )
     }
 }
