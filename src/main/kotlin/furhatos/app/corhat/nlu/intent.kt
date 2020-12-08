@@ -5,8 +5,6 @@ import furhatos.nlu.TextGenerator
 import furhatos.records.GenericRecord
 import furhatos.util.Language
 
-
-
 class DescribeContactHistory(var covid : Covid? = null, var person : Person? = null) : Intent(), TextGenerator {
     override fun getExamples(lang: Language): List<String> {
         return listOf("I've had contact with @person who has @covid",
@@ -16,7 +14,7 @@ class DescribeContactHistory(var covid : Covid? = null, var person : Person? = n
     }
 
     override fun toText(lang: Language): String {
-        return generate(lang, "[$person]");
+        return generate(lang, "[$person]")
     }
 
     override fun toString(): String {
@@ -40,12 +38,13 @@ open class DescribeHealthIntent : Intent(), TextGenerator {
     }
 
     override fun toText(lang: Language): String {
-        return generate(lang, "[$symptoms][for $duration]");
+        return generate(lang, "[$symptoms][for $duration]")
     }
 
     override fun toString(): String {
         return toText()
     }
+
     override fun adjoin(record: GenericRecord<Any>?) {
         super.adjoin(record)
         if (symptoms !=null){
@@ -57,21 +56,28 @@ open class DescribeHealthIntent : Intent(), TextGenerator {
 class AskTestTypeIntent : Intent(){
     var test : Test? = null
     override fun getExamples(lang: Language): List<String> {
-        return listOf("What is @test test", "tell me about @test test")
+        return listOf("What is @test test",
+                "tell me about @test test")
     }
 }
 
 class DescribeSymptomIntent : Intent(){
     var symptoms : ListOfSymptom? = null
     override fun getExamples(lang: Language): List<String> {
-        return listOf("I feel @symptoms", "I'm having @symptoms", "@symptoms", "since yesterday","since last week")
+        return listOf("I feel @symptoms",
+                "I'm having @symptoms",
+                "@symptoms",
+                "since yesterday",
+                "since last week")
     }
 }
 
 class DescribeDurationIntent : Intent(){
     var duration : Duration? = null
     override fun getExamples(lang: Language): List<String> {
-        return listOf("It has been @duration", "I've feel sick for @duration", "@duration", "about 2 weeks")
+        return listOf("It has been @duration",
+                "I've feel sick for @duration",
+                "@duration", "about 2 weeks")
     }
 }
 

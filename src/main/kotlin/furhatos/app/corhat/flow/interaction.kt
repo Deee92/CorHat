@@ -3,6 +3,7 @@ import furhatos.nlu.*
 import furhatos.app.corhat.nlu.*
 import furhatos.nlu.common.*
 import furhatos.flow.kotlin.*
+import furhatos.gestures.Gestures
 
 val Questions: State = state(Interaction){
     var nomatch = 0
@@ -34,7 +35,7 @@ val Questions: State = state(Interaction){
     onResponse {
         nomatch++
         if (nomatch > 1)
-            furhat.say("Sorry, I'm afraid I dont have any answer to that, for more information about covid please have a look at www.1177.se")
+            furhat.say("I'm afraid I don't know that, for more information about covid please visit www.1177.se")
         else
             furhat.say("sorry, I dont have information on that question, you are welcome with other questions")
         reentry()
@@ -43,16 +44,29 @@ val Questions: State = state(Interaction){
 
 val Start : State = state(parent = Questions) {
     onEntry {
-        furhat.ask("Welcome to Corhat, How may I help you")
+        furhat.say {
+            +"Welcome to CorHat."
+            +Gestures.BigSmile
+            }
+        goto(Start2)
     }
-    onReentry {
-        random(furhat.ask ("what else can I do for you?"),
-                furhat.ask ("do you have more questions?")
+}
+
+val Start2 : State = state(parent = Questions) {
+    onEntry {
+        // TODO: Random not working
+        random({furhat.ask("How may i help you?")},
+                {furhat.ask ("What can I do for you?")}
         )
-
     }
 
-    /* TO DO: add one response to exit from here*/
+    onReentry {
+        random({furhat.ask ("what else can I do for you?")},
+                {furhat.ask ("do you have more questions?")}
+        )
+    }
+
+    /* TODO: add one response to exit from here*/
 
     onResponse<RequestServiceOptions> {
         furhat.say ("I can help you with test booking for covid-19 and I can also provide you with general information of covid")
@@ -93,17 +107,19 @@ val GetInformation : State = state(parent = Questions) {
         random(furhat.ask ( "what do you wanna know about covid?" ),
                 furhat.ask ( "anything you'd like to know about covid 19?" ))
     }
+
     onReentry { furhat.ask ( "do you have some more questions?" ) }
 
     onResponse<Yes> { furhat.ask ( "what questions do you have? " )
     }
+
     onResponse<No>  { furhat.say("thanks for your time, have a nice day. ")
     }
 }
 
 val TestInit : State = state() {
     onEntry {
-        random(furhat.ask ( "To start with, can you describe for me your current health condition?" ),
+        random(furhat.ask ( "To start with, please describe your current health condition." ),
                 furhat.ask ( "I see, you want a test, how do you feel currently?" ))
     }
 
@@ -111,7 +127,6 @@ val TestInit : State = state() {
         users.current.health.adjoin(it.intent)
         goto(HealthCheck)
     }
-
 }
 
 val HealthCheck : State = state {
@@ -134,6 +149,7 @@ val HealthCheck : State = state {
         }
     }
 }
+
 val RequestContact : State = state {
     onEntry { furhat.ask("Have you had any contact with person who get infected by covid-19") }
     onReentry { furhat.ask("I see, please tell me more about your contact history?") }
@@ -151,7 +167,6 @@ val RequestContact : State = state {
         goto(HealthCheck)
     }
 }
-
 
 val RequestSymptom : State = state {
     onEntry {
@@ -194,7 +209,8 @@ val ConfirmHealthStatus : State = state {
                 furhat.say( "since you have no previous contact history and your symptoms has only been less than 2 days, I'd recommend you to stay at home and if your symptoms persist after 24 hours you are welcome back to book a test")
             }
             else if (users.current.health.duration?.timeunit?.value == "week" && users.current.health.duration?.count?.value!! >= 2 ) {
-                furhat.say("Even though you didn't have any contact with covid patient, but you've been experiencing symptoms over 2 weeks, in this case I'd recommend you to do an antibody test test")
+                // TODO: Can't test for antibody while sick!
+                furhat.say("Even though you didn't have any contact with covid patient, but you've been experiencing symptoms over 2 weeks, in this case I'd recommend you to do an antibody test")
             }
             else{
                 furhat.say( "your symptoms has been over a period of time, I'd recommend you with a PCR test")
@@ -219,7 +235,6 @@ val EndInteraction = state {
     }
 }
 
-// Teodor
 var c : City? = null
 val GetCityLocation : State = state(Interaction) {
     onEntry {
@@ -232,7 +247,7 @@ val GetCityLocation : State = state(Interaction) {
     }
 }
 
-//start - testing facilities and directions////////////////////////////////////////////////////////////////////////////////////////////
+// start - testing facilities and directions ////////////
 var a : Centers? = null
 var b : Day? = null
 val GetAvailability : State = state(Interaction) {
@@ -272,4 +287,4 @@ val give_address : State = state(Interaction) {
     }
 
 }
-//end - testing facilities and directions////////////////////////////////////////////////////////////////////////////////////////////
+// end - testing facilities and directions ////////////

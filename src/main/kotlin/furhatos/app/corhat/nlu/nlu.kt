@@ -1,10 +1,12 @@
 package furhatos.app.corhat.nlu
+
 import furhatos.nlu.TextGenerator
 import furhatos.util.Language
 import furhatos.nlu.*
 import furhatos.nlu.common.*
 import furhatos.nlu.common.Number
 import furhatos.records.GenericRecord
+
 //start - testing facilities and directions////////////////////////////////////////////////////////////////////////////////////////////
 
 // Our City entity
@@ -263,9 +265,11 @@ class Symptom : EnumEntity() {
 
 class Timeunit : EnumEntity(stemming = true, speechRecPhrases = true) {
     override fun getEnum(lang: Language): List<String> {
-        return listOf("a day: a day, yesterday, last night, today","a week: a week, last week, last friday, this monday","month","day","week")
+        return listOf("a day: a day, yesterday, last night, today",
+                "a week: a week, last week, last friday, this monday","month","day","week")
     }
 }
+
 class Duration(
         var count : Number? = null,
         var timeunit : Timeunit? = null) : ComplexEnumEntity() {
