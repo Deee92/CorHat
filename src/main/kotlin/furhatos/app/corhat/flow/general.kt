@@ -18,18 +18,20 @@ val Idle: State = state {
         furhat.setVoice(Language.ENGLISH_US, Gender.MALE)
         // TODO: Better voice?
         // furhat.setVoice(Language.ENGLISH_GB, "Brian", Gender.MALE)
-        if (users.count > 0) {
-            furhat.attend(users.random)
-            goto(Start)
-        }
+        send("LookAround")
     }
 
     onEntry {
         furhat.attendNobody()
-        // TODO: Isn't it better to have it here?
+    }
+
+    onEvent("LookAround") {
+        furhat.gesture(Gestures.Shake)
         if (users.count > 0) {
             furhat.attend(users.random)
             goto(Start)
+        } else {
+            furhat.gesture(Gestures.Smile)
         }
     }
 
@@ -94,6 +96,8 @@ val PleaseHold: State = state {
     onEntry {
         furhat.ask("Please check your microphone and let me know when you're back!", timeout = holdTheTime)
         /// TODO: Should unset attention if that allows to still listen
+        /// furhat.attendNobody()
+
     }
 
     onReentry {
@@ -148,7 +152,7 @@ val DebugState = partialState {
         reentry()
     }
 
-    onButton("clear user", key="p", id="clear user") {
+    onButton("clear user", key="c", id="clear user") {
         println(users.current.clear())
         reentry()
     }
@@ -161,8 +165,27 @@ val DebugState = partialState {
     }
 
     onButton("Goto Idle", key="q", id="goto idle") {
-        println(users.current.dump())
         goto(Idle)
+    }
+
+    onButton("LookAround", id="LookAround") {
+        send("LookAround")
+    }
+
+    onButton("Goto Start2", id="goto Start2") {
+        goto(Start2)
+    }
+
+    onButton("Goto ConfirmHealthStatus", id="goto ConfirmHealthStatus") {
+        goto(ConfirmHealthStatus)
+    }
+
+    onButton("Goto HealthCheck", id="goto HealthCheck") {
+        goto(HealthCheck)
+    }
+
+    onButton("Goto AskToBookTest", id="goto AskToBookTest") {
+        goto(AskToBookTest)
     }
 
 }
