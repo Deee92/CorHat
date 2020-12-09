@@ -7,3 +7,4 @@ import furhatos.records.User
 
 val User.health by NullSafeUserDataDelegate { DescribeHealthIntent() }
 val User.contact by NullSafeUserDataDelegate { DescribeContactHistory() }
+var User.rolled by NullSafeUserDataDelegate { false }

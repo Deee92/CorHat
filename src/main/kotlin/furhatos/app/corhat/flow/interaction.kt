@@ -39,8 +39,14 @@ val Questions: State = state(parent = Interaction) {
     }
     onResponse {
         nomatch++
-        furhat.ask("Can you say that again, please?")
-        /*
+        random({ furhat.say("Can you rephrase that?") },
+                { furhat.say("Sorry, I didn't understand.") },
+                { furhat.say({+"I need to buy me a dictionary for that."
+                    +Gestures.BigSmile})
+                }
+        )
+
+        /* TODO: Remove or reinvent?
         if (nomatch > 1)
             furhat.say("I'm afraid I don't know that, for more information about covid please visit www.1177.se")
         else
