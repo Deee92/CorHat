@@ -7,6 +7,9 @@ import furhatos.gestures.Gestures
 
 val Questions: State = state(parent = Interaction) {
     var nomatch = 0
+
+    include(DebugState)
+
     onResponse<AskTestTypeIntent> {
         if (it.intent.test?.value == "antibody") {
             furhat.say("An ${it.intent.test} test can determine if you have had COVID-19 before.")
@@ -39,10 +42,13 @@ val Questions: State = state(parent = Interaction) {
     }
     onResponse {
         nomatch++
-        random({ furhat.say("Can you rephrase that?") },
+        random(
+                { furhat.say("Can you rephrase that?") },
                 { furhat.say("Sorry, I didn't understand.") },
-                { furhat.say({+"I need to buy me a dictionary for that."
-                    +Gestures.BigSmile})
+                { furhat.say {
+                        +"I need to buy me a dictionary for that."
+                        +Gestures.BigSmile
+                        }
                 }
         )
 
@@ -62,6 +68,8 @@ val Start: State = state(parent = Questions) {
             +"Hi there, my name is CorHat."
             +Gestures.BigSmile
         }
+        println(users.current.dump())
+        println(users.current.distance())
         goto(Start2)
     }
 }
@@ -185,6 +193,8 @@ val RequestContact: State = state(parent = SubInteraction) {
 }
 
 val RequestSymptom: State = state(parent = SubInteraction) {
+    include(DebugState)
+
     onEntry {
         furhat.ask("How do you feel right now? What are your symptoms?")
     }
@@ -199,6 +209,8 @@ val RequestSymptom: State = state(parent = SubInteraction) {
 }
 
 val RequestDuration: State = state(parent = SubInteraction) {
+    include(DebugState)
+
     onEntry {
         furhat.ask("Okay, can you tell me how long you've been experiencing these symptoms?")
     }

@@ -7,6 +7,7 @@ import furhatos.util.*
 import java.io.File
 
 val Idle: State = state {
+    include(DebugState)
 
     init {
         val logFile = File("logs/flowlogger.txt") // Under skill directory
@@ -15,6 +16,7 @@ val Idle: State = state {
         furhat.param.noSpeechTimeout = 10000
 
         furhat.setVoice(Language.ENGLISH_US, Gender.MALE)
+        // TODO: Better voice?
         // furhat.setVoice(Language.ENGLISH_GB, "Brian", Gender.MALE)
         if (users.count > 0) {
             furhat.attend(users.random)
@@ -24,6 +26,11 @@ val Idle: State = state {
 
     onEntry {
         furhat.attendNobody()
+        // TODO: Isn't it better to have it here?
+        if (users.count > 0) {
+            furhat.attend(users.random)
+            goto(Start)
+        }
     }
 
     onUserEnter {
@@ -34,6 +41,8 @@ val Idle: State = state {
 
 val Interaction: State = state {
     var silences = 0  // This is not per user, instead per state.
+
+    include(DebugState)
 
     onUserLeave(instant = true) {
         println("Interaction.Leave Remaining: " + users.count)
@@ -72,7 +81,7 @@ val Interaction: State = state {
 
 /** Dummy state for inheritance */
 val SubInteraction: State = state(parent = Interaction) {
-    // TODO: Should this inherit Question?
+    // TODO: Should this inherit Question or Interaction?
 }
 
 /** Note that this state is meant to be accessed through call().
@@ -114,4 +123,46 @@ val PleaseHold: State = state {
     onResponse {
         terminate(it)
     }
+}
+
+val DebugState = partialState {
+    onExit {
+        println("onExit debug " + users.current.dump())
+    }
+
+    onResponse("print user", "producer", "print juicer") {
+        println(users.current.dump())
+        furhat.say("user printed")
+        reentry()
+    }
+
+    onResponse("current state", "currant state", "corrent state") {
+        val s = "Current state: " + this.currentState.name
+        println(s)
+        furhat.say(s)
+        reentry()
+    }
+
+    onButton("print user", key="p", id="print user") {
+        println(users.current.dump())
+        reentry()
+    }
+
+    onButton("clear user", key="p", id="clear user") {
+        println(users.current.clear())
+        reentry()
+    }
+
+    onButton("get state", key="s", id ="current state") {
+        val s = "Current state: " + this.currentState.name
+        println(s)
+        furhat.say(s)
+        reentry()
+    }
+
+    onButton("Goto Idle", key="q", id="goto idle") {
+        println(users.current.dump())
+        goto(Idle)
+    }
+
 }
