@@ -8,10 +8,10 @@ import furhatos.nlu.common.Number
 class City : EnumEntity(stemming = true, speechRecPhrases = true) {
     override fun getEnum(lang: Language): List<String> {
         return listOf("Stockholm",
-                "Linköping",
-                "Gothenburg",
+                "Linkoping: Linköping, linkoping",
+                "Gothenburg: Gothenburg, Goteborg, Göteborg",
                 "Uppsala: Uppsala, Uppsaala",
-                "Lund: Lund, Loond")
+                "Lund: Lund, Loond, Malmö, Malmoe, Malmo")
     }
 }
 
@@ -29,7 +29,7 @@ class Centers : EnumEntity(stemming = true, speechRecPhrases = true) {
         return listOf("Center 1", "Center 2", "Center 3", "Center 4",
                 // Center 5-8 Stockholm
                 "Center 5", "Center 6", "Center 7", "Center 8",
-                // Center 9-12 Linköping
+                // Center 9-12 Linkoping
                 "Center 9", "Center 10", "Center 11", "Center 12",
                 // Center 13-16 Uppsala
                 "Center 13", "Center 14", "Center 15", "Center 16"
@@ -231,8 +231,8 @@ class Show_direction(val center: Centers? = null) : Intent() {
 
 class Test : EnumEntity() {
     override fun getEnum(lang: Language): List<String> {
-        return listOf("PCR",
-                "antibody"
+        return listOf("PCR: PCR, virus, corona, covid, covid-19, infection",
+                "antibody: antibody, immunity"
         )
     }
 }
@@ -255,12 +255,12 @@ class HealthCondition : EnumEntity() {
 
 class Symptom : EnumEntity() {
     override fun getEnum(lang: Language): List<String> {
-        return listOf("head ache: head ache, pain in head",
+        return listOf("head ache: head ache, headache, pain in head",
                 "sore throat: sore throat, dry throat, throat pain",
                 "fever: fever, high temperature",
                 "cough: cough, dry cough",
                 "difficulty breathing: difficulty breathing, hard to breathe, can't breathe",
-                "fatigue: fatigue, illness, bad, feel bad, nausea, pain, sick, unwell"
+                "fatigue: fatigue, tired, illness, bad, feel bad, nausea, pain, sick, unwell"
         )
     }
 }

@@ -6,16 +6,15 @@ import furhatos.flow.kotlin.*
 import furhatos.gestures.Gestures
 
 val Questions: State = state(parent = Interaction) {
-    var nomatch = 0
-
     include(DebugState)
 
     onResponse<AskTestTypeIntent> {
         if (it.intent.test?.value == "antibody") {
-            furhat.say("An ${it.intent.test} test can determine if you have had COVID-19 before.")
+            furhat.say ("""An ${it.intent.test!!.value} test may tell if you have had COVID-19 before. 
+|               It's an indication, but no guarantee for immunity.""")
             reentry()
         } else {
-            furhat.say("A ${it.intent.test} test can determine if you are currently infected with COVID-19.")
+            furhat.say("A ${it.intent.test!!.value} test determines if you are currently infected with COVID-19.")
             reentry()
         }
     }
@@ -40,26 +39,34 @@ val Questions: State = state(parent = Interaction) {
     onResponse<BookTest> {
         goto(TestInit)
     }
-    onResponse {
-        nomatch++
-        random(
-                { furhat.say("Can you rephrase that?") },
-                { furhat.say("Sorry, I didn't understand.") },
-                { furhat.say {
-                        +"I need to buy me a dictionary for that."
-                        +Gestures.BigSmile
-                        }
-                }
-        )
-
-        /* TODO: Remove or reinvent?
-        if (nomatch > 1)
-            furhat.say("I'm afraid I don't know that, for more information about covid please visit www.1177.se")
-        else
-            furhat.say("sorry, I dont have information on that question, you are welcome with other questions")
-         */
-        reentry()
+    onResponse<GetInfo> {
+        goto(GetInformation)
     }
+
+    /* TODO: these came from Start2. Does it work here? */
+
+    onResponse<RequestServiceOptions> {
+        goto(ChooseService)
+    }
+
+    onResponse<DescribeHealthIntent> {
+        users.current.health.adjoin(it.intent)
+        goto(HealthCheck)
+    }
+    onPartialResponse<DescribeHealthIntent> {
+        users.current.health.adjoin(it.intent)
+        raise(it, it.secondaryIntent)
+    }
+
+    onResponse<DescribeContactHistory> {
+        users.current.contact.adjoin(it.intent)
+        goto(HealthCheck)
+    }
+    onPartialResponse<DescribeContactHistory> {
+        users.current.contact.adjoin(it.intent)
+        raise(it, it.secondaryIntent)
+    }
+
 }
 
 val Start: State = state(parent = Questions) {
@@ -67,7 +74,7 @@ val Start: State = state(parent = Questions) {
         furhat.say {
             +"Hi there, I'm CorHat."
             +Gestures.BigSmile
-            +"I have information about COVID-19 in Sweden."
+            +"I share info about COVID-19 and testing in Sweden."
         }
         println(users.current.dump())
         println(users.current.distance())
@@ -89,34 +96,20 @@ val Start2: State = state(parent = Questions) {
         )
     }
 
-    /* TODO: add one response to exit from here*/
-
-    onResponse<RequestServiceOptions> {
-        furhat.say("I can help you book a test for COVID-19. I can also share general information about COVID-19.")
+    onResponse<Yes> {
         goto(ChooseService)
     }
 
-    onResponse<DescribeHealthIntent> {
-        users.current.health.adjoin(it.intent)
-        goto(HealthCheck)
-    }
-    onPartialResponse<DescribeHealthIntent> {
-        users.current.health.adjoin(it.intent)
-        raise(it, it.secondaryIntent)
-    }
-
-    onResponse<DescribeContactHistory> {
-        users.current.contact.adjoin(it.intent)
-        goto(HealthCheck)
-    }
-    onPartialResponse<DescribeContactHistory> {
-        users.current.contact.adjoin(it.intent)
-        raise(it, it.secondaryIntent)
+    onResponse<No> {
+        goto(ChooseService)
     }
 }
 
-val ChooseService: State = state(parent = SubInteraction) {
-    onEntry { furhat.listen() }
+val ChooseService: State = state(parent = Questions) {
+    onEntry { furhat.ask("I can help you book a test for COVID-19. I can also share general information about COVID-19.") }
+
+    onReentry { furhat.ask("Do you have questions or want a test?") }
+
     onResponse<BookTest> {
         goto(TestInit)
     }
@@ -272,7 +265,7 @@ val GetCityLocation: State = state(parent = Interaction) {
 
     onResponse<Location> {
         c = it.intent.city
-        furhat.ask("${c?.text}?")
+        furhat.ask("That's ${c?.value}?")
         reentry()
     }
     onResponse<Yes> {
@@ -302,7 +295,7 @@ val GetAvailability: State = state(parent = Interaction) {
 val ChooseCenter: State = state(parent = Interaction) {
     onEntry {
         furhat.say("${b}, that is great !")
-        furhat.say("You are welcome to take a test in ${Available_Centers(b?.text, c?.text).optionsToText()} on ${b}")
+        furhat.say("You are welcome to take a test in ${Available_Centers(b?.value, c?.value).optionsToText()} on ${b}")
         // TODO: Wasn't center covered?
         furhat.ask("Now, please let me know which center you prefer to take your test.")
     }
@@ -317,7 +310,7 @@ val GiveAddress: State = state(parent = Interaction) {
         furhat.ask("Do you want me to help with the directions to ${a} ?")
     }
     onResponse<Yes> {
-        furhat.say("Alright! To get to ${a}, you can follow ${Center_Direction(a?.text).optionsToText()}")
+        furhat.say("Alright! To get to ${a}, you can follow ${Center_Direction(a?.value).optionsToText()}")
         goto(EndInteraction)
     }
     onResponse<No> {

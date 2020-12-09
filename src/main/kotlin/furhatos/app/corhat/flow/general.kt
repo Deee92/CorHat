@@ -2,6 +2,7 @@ package furhatos.app.corhat.flow
 
 import furhatos.flow.kotlin.*
 import furhatos.gestures.Gestures
+import furhatos.nlu.LogisticMultiIntentClassifier
 import furhatos.nlu.Response
 import furhatos.util.*
 import java.io.File
@@ -12,7 +13,8 @@ val Idle: State = state {
     init {
         val logFile = File("logs/flowlogger.txt") // Under skill directory
         flowLogger.start(logFile) // Start the logger
-
+        /// TODO: Worse?
+        // LogisticMultiIntentClassifier.setAsDefault()
         furhat.param.noSpeechTimeout = 10000
 
         furhat.setVoice(Language.ENGLISH_US, Gender.MALE)
@@ -39,6 +41,8 @@ val Idle: State = state {
         furhat.attend(it)
         goto(Start)
     }
+
+    // Note: There is no speech input in this state.
 }
 
 val Interaction: State = state {
@@ -64,6 +68,27 @@ val Interaction: State = state {
         furhat.glance(it)
     }
 
+    // Final fallback for non-recognized stuff
+    onResponse {
+        random(
+                { furhat.say("Can you rephrase that?") },
+                { furhat.say("Sorry, I didn't understand.") },
+                { furhat.say {
+                    +"I need to buy me a dictionary for that."
+                    +Gestures.BigSmile
+                }
+                }
+        )
+
+        /* TODO: Remove or reinvent?
+        if (nomatch > 1)
+            furhat.say("I'm afraid I don't know that, for more information about covid please visit www.1177.se")
+        else
+            furhat.say("sorry, I dont have information on that question, you are welcome with other questions")
+         */
+        reentry()
+    }
+
     onNoResponse {
         silences++
         println("Interaction Silence: $silences")
@@ -82,7 +107,7 @@ val Interaction: State = state {
 }
 
 /** Dummy state for inheritance */
-val SubInteraction: State = state(parent = Interaction) {
+val SubInteraction: State = state(parent = Questions) {
     // TODO: Should this inherit Question or Interaction?
 }
 
@@ -161,6 +186,11 @@ val DebugState = partialState {
         val s = "Current state: " + this.currentState.name
         println(s)
         furhat.say(s)
+        reentry()
+    }
+
+    onButton("stop talking", key="z", id="stop talking") {
+        furhat.say("shh", abort = true) // Aborts the current speech
         reentry()
     }
 
