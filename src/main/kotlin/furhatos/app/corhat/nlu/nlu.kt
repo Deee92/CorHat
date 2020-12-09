@@ -94,7 +94,7 @@ class Center_Direction(val center: String? = null) : EnumEntity(stemming = true,
 
 // Available Centers entity.
 // TODO: Require both
-class Available_centers(val day: String? = null, val city: String? = null) : EnumEntity(stemming = true, speechRecPhrases = true) {
+class Available_Centers(val day: String? = null, val city: String? = null) : EnumEntity(stemming = true, speechRecPhrases = true) {
     override fun getEnum(lang: Language): List<String> {
         print(day)
         if (city == "Gothenburg") {

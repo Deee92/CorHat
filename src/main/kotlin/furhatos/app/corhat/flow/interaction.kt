@@ -65,8 +65,9 @@ val Questions: State = state(parent = Interaction) {
 val Start: State = state(parent = Questions) {
     onEntry {
         furhat.say {
-            +"Hi there, my name is CorHat."
+            +"Hi there, I'm CorHat."
             +Gestures.BigSmile
+            +"I have information about COVID-19 in Sweden."
         }
         println(users.current.dump())
         println(users.current.distance())
@@ -248,14 +249,13 @@ val ConfirmHealthStatus: State = state(parent = SubInteraction) {
     }
 }
 
-
 val AskToBookTest: State = state(parent = Interaction) {
     onEntry {
         furhat.ask("Can I help you book your test?")
     }
 
     onResponse<Yes> {
-        furhat.say("Great, I would love to help you book a test.")
+        furhat.say("Great, just a moment...")
         goto(GetCityLocation)
     }
 
@@ -302,16 +302,16 @@ val GetAvailability: State = state(parent = Interaction) {
 val ChooseCenter: State = state(parent = Interaction) {
     onEntry {
         furhat.say("${b}, that is great !")
-        furhat.say("You are welcome to take a test in ${Available_centers(b?.text, c?.text).optionsToText()} on ${b}")
+        furhat.say("You are welcome to take a test in ${Available_Centers(b?.text, c?.text).optionsToText()} on ${b}")
         // TODO: Wasn't center covered?
         furhat.ask("Now, please let me know which center you prefer to take your test.")
     }
     onResponse<Show_direction> {
         a = it.intent.center
-        goto(give_address)
+        goto(GiveAddress)
     }
 }
-val give_address: State = state(parent = Interaction) {
+val GiveAddress: State = state(parent = Interaction) {
     onEntry {
         furhat.say("Good choice!")
         furhat.ask("Do you want me to help with the directions to ${a} ?")
