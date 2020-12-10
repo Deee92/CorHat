@@ -93,7 +93,6 @@ class Center_Direction(val center: String? = null) : EnumEntity(stemming = true,
 }
 
 // Available Centers entity.
-// TODO: Require both
 class Available_Centers(val day: String? = null, val city: String? = null) : EnumEntity(stemming = true, speechRecPhrases = true) {
     override fun getEnum(lang: Language): List<String> {
         print(day)
@@ -193,6 +192,8 @@ class Location(val city: City? = null) : Intent() {
     override fun getExamples(lang: Language): List<String> {
         return listOf("@city",
                 "I'm in @city",
+                "I would like to get tested in @city",
+                "I can take the test in @city",
                 "I live in @city",
                 "I'm from @city"
         )
@@ -221,10 +222,10 @@ class Show_direction(val center: Centers? = null) : Intent() {
     override fun getExamples(lang: Language): List<String> {
         return listOf("@center",
                 "I'd rather go to @center",
-                "I would like test in @center",
+                "I would like to get tested in @center",
                 "I can test in @center",
                 "I can do it in @center",
-                "I would like test in @center"
+                "I would like to take the test in @center"
         )
     }
 }
@@ -239,7 +240,7 @@ class Test : EnumEntity() {
 
 class Person(var person: String? = null) : EnumEntity(stemming = true, speechRecPhrases = true) {
     override fun getEnum(lang: Language): List<String> {
-        return listOf("contact: someone, father, mom, dad, mother, sister, brother, parents, family, neighbor, person, people, colleague, partner, husband, wife, friend",
+        return listOf("contact: father, mom, dad, mother, sister, brother, parents, family, neighbor, colleague, partner, husband, wife, friend", "family",
                 "@person"
         )
     }
@@ -257,10 +258,11 @@ class Symptom : EnumEntity() {
     override fun getEnum(lang: Language): List<String> {
         return listOf("head ache: head ache, pain in head",
                 "sore throat: sore throat, dry throat, throat pain",
-                "fever: fever, high temperature",
+                "fever: fever, sick, high temperature, unwell, illness, ill",
                 "cough: cough, dry cough",
                 "difficulty breathing: difficulty breathing, hard to breathe, can't breathe",
-                "fatigue: fatigue, illness, bad, feel bad, nausea, pain, sick, unwell"
+                "fatigue: fatigue, bad, feel bad, nausea, pain",
+                "healthy: healthy, no symptoms, fine, well, asymptomatic"
         )
     }
 }

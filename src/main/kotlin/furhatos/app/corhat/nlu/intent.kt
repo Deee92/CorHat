@@ -64,7 +64,9 @@ class AskTestTypeIntent : Intent() {
     var test: Test? = null
     override fun getExamples(lang: Language): List<String> {
         return listOf("What is a @test test",
-                "Tell me about the @test test"
+                "Tell me about the @test test",
+                "@test test",
+                "@test"
         )
     }
 }
@@ -85,7 +87,7 @@ class DescribeDurationIntent : Intent() {
     var duration: Duration? = null
     override fun getExamples(lang: Language): List<String> {
         return listOf("It has been @duration",
-                "I've feel sick for @duration",
+                "I've felt sick for @duration",
                 "@duration", "about 2 weeks"
         )
     }
@@ -124,8 +126,11 @@ class AskSafetyMeasure : Intent() {
     var covid: Covid? = null
     override fun getExamples(lang: Language): List<String> {
         return listOf("How can I protect myself from @covid?",
-                "How to protect myself from @covid",
-                "How do I protect myself from @covid",
+                "safety measures",
+                "safety measures for @covid",
+                "How can I be safe from @covid?",
+                "How to protect myself from @covid?",
+                "How do I protect myself from @covid?",
                 "What can I do to avoid getting infected?"
         )
     }
@@ -134,8 +139,7 @@ class AskSafetyMeasure : Intent() {
 class BookTest : Intent() {
     var covid: Covid? = null
     override fun getExamples(lang: Language): List<String> {
-        return listOf("I want book a test",
-                "I want to book a test",
+        return listOf("I want to book a test",
                 "I want a test",
                 "I want to get tested for @covid"
         )
@@ -143,20 +147,24 @@ class BookTest : Intent() {
 }
 
 class GetInfo : Intent() {
+    var covid: Covid? = null
     override fun getExamples(lang: Language): List<String> {
-        return listOf("I'd like to learn more about COVID-19",
+        return listOf("I'd like to learn more about @covid",
+                "general information",
                 "I need some general information",
-                "I need some general information about COVID-19",
-                "I want to have some general information about COVID-19",
-                "What is COVID-19?"
+                "I need some general information about @covid",
+                "I want to have some general information about @covid",
+                "What is @covid?"
         )
     }
 }
 
 class GovHelpline : Intent() {
+    var covid: Covid? = null
     override fun getExamples(lang: Language): List<String> {
         return listOf("Government helpline",
                 "helpline",
+                "government helpline for @covid",
                 "Where can I call for official guidelines",
                 "I need the government helpline"
         )
