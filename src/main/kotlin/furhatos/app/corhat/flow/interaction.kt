@@ -29,12 +29,12 @@ val Questions: State = state(parent = Interaction) {
 
     onResponse<AskCovid19> {
         furhat.say("COVID-19, or the novel Coronavirus, is a contagious disease. " +
-            "It's been a pandemic globally active since late 2019."
+            "It's been a globally active pandemic since late 2019."
         )
         reentry()
     }
     onResponse<AskSymptoms> {
-        furhat.say("Possible symptoms for COVID-19 include " + Symptom().optionsToText())
+        furhat.say("Possible symptoms for COVID-19 include " + Symptom().optionsToText() + ", which means some cases may even be asymptomatic.")
         reentry()
     }
     onResponse<AskSafetyMeasure> {
@@ -177,10 +177,8 @@ val ChooseService: State = state(parent = Questions) {
 
 val GetInformation: State = state(parent = Questions) {
     onEntry {
-        random(furhat.say("I can tell you about the common symptoms, antibody and PCR tests, safety measures, and official government helplines for COVID-19. " +
-                "What would you like to know?"),
-                furhat.say("Is there anything you would like to know about COVID-19?")
-        )
+        furhat.say("I can tell you about the common symptoms, antibody and PCR tests, safety measures, and official government helplines for COVID-19. " +
+                "What would you like to know?")
         furhat.listen()
     }
 
@@ -225,7 +223,7 @@ val HealthCheck: State = state(parent = SubInteraction) {
                 if (contact.person?.value == null) {
                     furhat.say("Let me summarize: You have $health, and you have not had any contact with a COVID-19 patient.")
                 } else {
-                    furhat.say("So, in conclusion you have $health, and you've been in contact with your $contact, who tested positive for COVID-19")
+                    furhat.say("So, in conclusion, you have $health, and you've been in contact with your $contact, who tested positive for COVID-19.")
                 }
                 goto(ConfirmHealthStatus)
             }
@@ -301,7 +299,7 @@ val ConfirmHealthStatus: State = state(parent = SubInteraction) {
                 goto(AskToBookTest)
             } else {
                 // and has no contact history
-                furhat.say("Because you claim no contact history, and are not experiencing any symptoms, I do not recommend any testing. Continue social distancing and be aware of any symptoms.")
+                furhat.say("Because you claim no contact history, and are not experiencing any symptoms, I do not recommend any testing. Continue social distancing and keep monitoring your symptoms.")
                 goto(EndInteraction)
             }
         }
@@ -354,7 +352,7 @@ val GetCityLocation: State = state(parent = Interaction) {
 
     onResponse<Location> {
         c = it.intent.city
-        furhat.ask("Did you say you want to take the test in ${c?.value}?")
+        furhat.ask("Did you say you want to take the test in ${c?.value?.capitalize()}?")
         reentry()
     }
     onResponse<Yes> {
@@ -396,7 +394,7 @@ val ChooseCenter: State = state(parent = Interaction) {
 val GiveAddress: State = state(parent = Interaction) {
     onEntry {
         furhat.say("Good choice!")
-        furhat.ask("Do you want me to help with the directions to ${a} ?")
+        furhat.ask("Do you want me to help with the directions to ${a}?")
     }
     onResponse<Yes> {
         furhat.say("Alright! To get to ${a}, you can follow ${Center_Direction(a?.value).optionsToText()}")

@@ -240,7 +240,7 @@ class Test : EnumEntity() {
 
 class Person(var person: String? = null) : EnumEntity(stemming = true, speechRecPhrases = true) {
     override fun getEnum(lang: Language): List<String> {
-        return listOf("contact: father, mom, dad, mother, sister, brother, parents, family, neighbor, colleague, partner, husband, wife, friend", "family",
+        return listOf("contact: father, mom, dad, mother, sister, brother, parents, family, neighbor, colleague, partner, husband, wife, friend", "girlfriend", "boyfriend", "family",
                 "@person"
         )
     }
@@ -262,7 +262,7 @@ class Symptom : EnumEntity() {
                 "cough: cough, dry cough",
                 "difficulty breathing: difficulty breathing, hard to breathe, can't breathe",
                 "fatigue: fatigue, tired, bad, feel bad, nausea, pain",
-                "feel well: healthy, no symptoms, fine, well, asymptomatic"
+                "no symptoms: no symptoms, feel well, healthy, fine, well, asymptomatic"
         )
     }
 }
