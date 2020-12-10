@@ -93,6 +93,8 @@ class RequestServiceOptions : Intent() {
     }
 }
 
+/* General information */
+
 class AskCovid19 : Intent() {
     var covid: Covid? = null
     override fun getExamples(lang: Language): List<String> {
