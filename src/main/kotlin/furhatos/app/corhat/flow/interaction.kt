@@ -1,9 +1,12 @@
 package furhatos.app.corhat.flow
 
 import furhatos.app.corhat.nlu.*
+import furhatos.app.corhat.randomItem
+import furhatos.app.corhat.randomLambda
 import furhatos.nlu.common.*
 import furhatos.flow.kotlin.*
 import furhatos.gestures.Gestures
+import furhatos.util.Language
 
 val Questions: State = state(parent = Interaction) {
     onResponse<AskTestTypeIntent> {
@@ -23,7 +26,7 @@ val Questions: State = state(parent = Interaction) {
     }
 
     onResponse<AskCovid19> {
-        furhat.say("COVID-19, or the novel Coronavirus, is a contagious disease." +
+        furhat.say("COVID-19, or the novel Coronavirus, is a contagious disease. " +
             "It's been a pandemic globally active since late 2019."
         )
         reentry()
@@ -40,7 +43,37 @@ val Questions: State = state(parent = Interaction) {
         goto(TestInit)
     }
     onResponse<GetInfo> {
-        goto(GetInformation)
+        goto(RandomTalk)
+    }
+
+    onEvent("RandomFact") {
+        furhat.gesture(Gestures.Nod, async = true)
+
+        randomLambda(
+                { furhat.say("Keep distance and stay safe.") },
+                {
+                    val test = randomItem("PCR","antibody")
+                    val utterance = "what is $test test?"
+                    val results = thisState.getIntentClassifier(lang = Language.ENGLISH_US).classify(utterance)
+                    if (results.isEmpty()) {
+                        reentry()
+                    }
+                    else {
+                        results.forEach {
+                            raise(it.intents.first())
+                        }
+                    }
+
+                },
+                { raise(AskCovid19()) },
+                { raise(AskSymptoms()) },
+                { raise(GovHelpline()) },
+                { raise(AskSafetyMeasure()) },
+                /// { goto(TestInit) },
+                { furhat.say("There is no date set for vaccine distribution.") }
+        )
+        furhat.gesture(Gestures.Smile)
+        furhat.listen()
     }
 
     /* TODO: these came from Start2. Does it work here? */
@@ -104,6 +137,26 @@ val Start2: State = state(parent = Questions) {
 
     onResponse<No> {
         goto(ChooseService)
+    }
+}
+
+val RandomTalk: State = state(parent = Questions) {
+    onEntry {
+        raise("RandomFact")
+    }
+
+    onReentry {
+        furhat.ask("Want another fact?")
+    }
+
+    onResponse<No> {
+        goto(ChooseService)
+    }
+    onResponse<Yes> {
+        raise("RandomFact")
+    }
+    onNoResponse {
+        raise("RandomFact")
     }
 }
 

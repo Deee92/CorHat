@@ -295,7 +295,7 @@ class Duration(var count: Number? = null,
                 timeunit?.value = "week"
             }
         }
-        return generate("$count" + if (count?.value == 1) timeunit?.value else "${timeunit?.value}" + "s")
+        return generate("$count " + if (count?.value == 1) timeunit?.value else "${timeunit?.value}" + "s")
     }
 }
 

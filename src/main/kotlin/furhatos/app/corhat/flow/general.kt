@@ -1,5 +1,6 @@
 package furhatos.app.corhat.flow
 
+import furhatos.app.corhat.nlu.*
 import furhatos.flow.kotlin.*
 import furhatos.gestures.Gestures
 import furhatos.nlu.LogisticMultiIntentClassifier
@@ -76,16 +77,9 @@ val Interaction: State = state {
                 { furhat.say {
                     +"I need to buy me a dictionary for that."
                     +Gestures.BigSmile
-                }
+                   }
                 }
         )
-
-        /* TODO: Remove or reinvent?
-        if (nomatch > 1)
-            furhat.say("I'm afraid I don't know that, for more information about covid please visit www.1177.se")
-        else
-            furhat.say("sorry, I dont have information on that question, you are welcome with other questions")
-         */
         reentry()
     }
 
@@ -216,6 +210,10 @@ val DebugState = partialState {
 
     onButton("Goto AskToBookTest", id="goto AskToBookTest") {
         goto(AskToBookTest)
+    }
+
+    onButton("Goto RandomTalk", id="goto RandomTalk") {
+        goto(RandomTalk)
     }
 
 }

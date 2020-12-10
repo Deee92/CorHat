@@ -166,7 +166,6 @@ class GetInfo : Intent() {
                 "I need some general information",
                 "I need some general information about @covid",
                 "I want to have some general information about @covid",
-                "What is @covid?",
                 "Tell me everything"
         )
     }
