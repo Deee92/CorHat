@@ -239,7 +239,7 @@ val RequestContact: State = state(parent = SubInteraction) {
     }
 
     onReentry {
-        furhat.ask("Did any of your close contacts test positive?")
+        furhat.ask("Which of your close contacts tested positive?")
     }
 
     onResponse<DescribeContactHistory> {
@@ -292,7 +292,7 @@ val RequestDuration: State = state(parent = SubInteraction) {
 val ConfirmHealthStatus: State = state(parent = SubInteraction) {
     val asymptomatic: Array<String> = arrayOf("feel well", "healthy", "no symptoms", "fine", "well", "asymptomatic")
     onEntry {
-        println("ConfirmHealthStatus: " + users.current.dump())
+        /// println("ConfirmHealthStatus: " + users.current.dump())
         // user is healthy
         if (users.current.health.symptoms?.toText() in asymptomatic) {
             if (users.current.contact.person?.value != null) {

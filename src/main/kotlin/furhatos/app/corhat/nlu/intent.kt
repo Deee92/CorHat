@@ -9,6 +9,7 @@ class DescribeContactHistory(var covid: Covid? = null, var person: Person? = nul
     override fun getExamples(lang: Language): List<String> {
         return listOf("I've had contact with @person who has @covid",
                 "I've been in touch with @person who tested positive for @covid",
+                "@person",
                 "my @person has @covid",
                 "my @person tested positive",
                 "my @person tested positive for @covid",
