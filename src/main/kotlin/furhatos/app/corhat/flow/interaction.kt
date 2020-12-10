@@ -6,26 +6,26 @@ import furhatos.flow.kotlin.*
 import furhatos.gestures.Gestures
 
 val Questions: State = state(parent = Interaction) {
-    include(DebugState)
-
     onResponse<AskTestTypeIntent> {
         if (it.intent.test?.value == "antibody") {
-            furhat.say ("""An ${it.intent.test!!.value} test may tell if you have had COVID-19 before. 
-|               It's an indication, but no guarantee for immunity.""")
+            furhat.say ("An ${it.intent.test?.value} test may tell if you have had COVID-19 before. " +
+               "It's an indication, but no guarantee for immunity.")
             reentry()
         } else {
-            furhat.say("A ${it.intent.test!!.value} test determines if you are currently infected with COVID-19.")
+            furhat.say("A ${it.intent.test?.value} test determines if you are currently infected with COVID-19.")
             reentry()
         }
     }
 
     onResponse<GovHelpline> {
-        furhat.say("You can call 1-1-7-7, or visit www.1177.s e, for information on the official guidelines for COVID-19.")
+        furhat.say("You can call 1-1-7-7, or visit web site 1177.s e, for information on the official guidelines for COVID-19.")
         reentry()
     }
 
     onResponse<AskCovid19> {
-        furhat.say("COVID-19, or the novel Coronavirus, is a contagious disease.")
+        furhat.say("COVID-19, or the novel Coronavirus, is a contagious disease." +
+            "It's been a pandemic globally active since late 2019."
+        )
         reentry()
     }
     onResponse<AskSymptoms> {
@@ -84,15 +84,18 @@ val Start: State = state(parent = Questions) {
 
 val Start2: State = state(parent = Questions) {
     onEntry {
-        random({ furhat.ask("How may I help you?") },
-                { furhat.ask("What can I do for you?") }
+        // Note: Random not working for ask
+        random({ furhat.say("How may I help you?") },
+                { furhat.say("What can I do for you?") }
         )
+        furhat.listen()
     }
 
     onReentry {
-        random({ furhat.ask("What else can I do for you?") },
-                { furhat.ask("Do you have more questions?") }
+        random({ furhat.say("What else can I do for you?") },
+                { furhat.say("Do you have more questions?") }
         )
+        furhat.listen()
     }
 
     onResponse<Yes> {
@@ -119,9 +122,11 @@ val ChooseService: State = state(parent = Questions) {
 
 val GetInformation: State = state(parent = Questions) {
     onEntry {
-        random(furhat.ask("I can tell you about the common symptoms, antibody and PCR tests, safety measures, and official government helplines for COVID-19. " +
+        random(furhat.say("I can tell you about the common symptoms, antibody and PCR tests, safety measures, and official government helplines for COVID-19. " +
                 "What would you like to know?"),
-                furhat.ask("Is there anything you would like to know about COVID-19?"))
+                furhat.say("Is there anything you would like to know about COVID-19?")
+        )
+        furhat.listen()
     }
 
     onReentry { furhat.ask("Do you have more questions?") }
@@ -137,8 +142,10 @@ val GetInformation: State = state(parent = Questions) {
 
 val TestInit: State = state(parent = SubInteraction) {
     onEntry {
-        random(furhat.ask("Let's start with your current health condition. Can you please describe your symptoms?"),
-                furhat.ask("I see, you want to take a test. How do you feel currently?"))
+        random(furhat.say("Let's start with your current health condition. Can you please describe your symptoms?"),
+                furhat.say("I see, you want to take a test. How do you feel currently?")
+        )
+        furhat.listen()
     }
 
     onResponse<DescribeHealthIntent> {
@@ -215,6 +222,7 @@ val RequestDuration: State = state(parent = SubInteraction) {
     }
 }
 
+// TODO: Separate confirm from recommend.
 val ConfirmHealthStatus: State = state(parent = SubInteraction) {
     val asymptomatic: Array<String> = arrayOf("healthy", "fine", "no symptoms", "asymptomatic", "well")
     onEntry {
@@ -277,7 +285,7 @@ val GetCityLocation: State = state(parent = Interaction) {
 
     onResponse<Location> {
         c = it.intent.city
-        furhat.ask("Did you say you want to take the test in ${c?.text?.capitalize()}?")
+        furhat.ask("Did you say you want to take the test in ${c?.value}?")
         reentry()
     }
     onResponse<Yes> {
@@ -290,6 +298,8 @@ val GetCityLocation: State = state(parent = Interaction) {
         reentry()
     }
 }
+
+/* testing facilities and directions */
 
 var a: Centers? = null
 var b: Day? = null
