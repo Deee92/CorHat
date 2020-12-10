@@ -195,7 +195,7 @@ val GetInformation: State = state(parent = Questions) {
     }
 }
 
-val TestInit: State = state(parent = Questions) {
+val TestInit: State = state(parent = SubInteraction) {
     onEntry {
         random({ furhat.say("Let's start with your current health condition. Can you please describe your symptoms?") },
                 { furhat.say("I see, you want to take a test. How do you feel currently?") }
@@ -203,7 +203,9 @@ val TestInit: State = state(parent = Questions) {
         furhat.listen()
     }
 
-    onReentry { furhat.say("Please describe your symptoms freely.") }
+    onReentry {
+        furhat.ask("Please describe your symptoms freely.")
+    }
 
     onResponse<DescribeHealthIntent> {
         users.current.health.adjoin(it.intent)
@@ -221,9 +223,9 @@ val HealthCheck: State = state(parent = SubInteraction) {
             contact.person == null -> goto(RequestContact)
             else -> {
                 if (contact.person?.value == null) {
-                    furhat.say("Let's see. You have $health, and you have not had any contact with a COVID-19 patient.")
+                    furhat.say("Let me summarize: You have $health, and you have not had any contact with a COVID-19 patient.")
                 } else {
-                    furhat.say("Let's see. You have $health, and you've been in contact with your $contact, who tested positive for COVID-19")
+                    furhat.say("So, in conclusion you have $health, and you've been in contact with your $contact, who tested positive for COVID-19")
                 }
                 goto(ConfirmHealthStatus)
             }
@@ -232,13 +234,20 @@ val HealthCheck: State = state(parent = SubInteraction) {
 }
 
 val RequestContact: State = state(parent = SubInteraction) {
-    onEntry { furhat.ask("Do you think you may have had contact with a person infected with COVID-19?") }
-    onReentry { furhat.ask("Can you please tell me more about your contact history?") }
+    onEntry {
+        furhat.ask("Do you think you may have had contact with a person infected with COVID-19?")
+    }
+
+    onReentry {
+        furhat.ask("Did any of your close contacts test positive?")
+    }
+
     onResponse<DescribeContactHistory> {
         furhat.say("I see. You have had contact with your ${it.intent.person}, who tested positive for COVID-19.")
         users.current.contact.person = it.intent.person
         goto(HealthCheck)
     }
+
     onResponse<Yes> {
         reentry()
     }
@@ -281,33 +290,36 @@ val RequestDuration: State = state(parent = SubInteraction) {
 
 // TODO: Separate confirm from recommend.
 val ConfirmHealthStatus: State = state(parent = SubInteraction) {
-    val asymptomatic: Array<String> = arrayOf("healthy", "fine", "no symptoms", "asymptomatic", "well")
+    val asymptomatic: Array<String> = arrayOf("feel well", "healthy", "no symptoms", "fine", "well", "asymptomatic")
     onEntry {
+        println("ConfirmHealthStatus: " + users.current.dump())
         // user is healthy
         if (users.current.health.symptoms?.toText() in asymptomatic) {
             if (users.current.contact.person?.value != null) {
                 // but has contact history
-                furhat.say("You are not experiencing symptoms, but have previously had contact with a COVID-19 patient. You might want to get an antibody test.")
+                furhat.say("You are not experiencing symptoms, but have had contact with a COVID-19 patient. You might want to get an antibody test if you are worried.")
                 goto(AskToBookTest)
             } else {
                 // and has no contact history
-                furhat.say("You have no previous contact history, and are not experiencing any symptoms. I recommend you to keep following social distancing norms.")
+                furhat.say("Because you claim no contact history, and are not experiencing any symptoms, I do not recommend any testing. Continue social distancing and be aware of any symptoms.")
                 goto(EndInteraction)
             }
         }
+        // user is sick now
         // user has contact history
-        if (users.current.contact.person?.value != null) {
+        else if (users.current.contact.person?.value != null) {
             if (users.current.health.duration?.timeunit?.value == "week" && users.current.health.duration?.count?.value!! >= 2) {
-                furhat.say("I can see that you have contact history and you've been experiencing symptoms over 2 weeks, in this case I'd recommend you to do an antibody test.")
+                furhat.say("Because of your contact history and long lasting symptoms, in this case I'd recommend you to do a PCR test urgently.")
                 goto(AskToBookTest)
             } else {
-                furhat.say("You have had contact with a COVID-19 patient, and have had symptoms for less than 2 weeks. I'd recommend you to take a PCR test.")
+                furhat.say("Because you have ongoing symptoms and have had contact with a COVID-19 patient, I'd recommend you to take a PCR test.")
                 goto(AskToBookTest)
             }
         } else {
             // user has no contact history
             if (users.current.health.duration?.timeunit?.value == "day" && users.current.health.duration?.count?.value!! <= 2) {
                 furhat.say("Since you have no previous contact history, and you have had symptoms for about 2 days, I'd recommend you to stay at home. If your symptoms persist after 24 hours, you are welcome back to book a test!")
+                goto(EndInteraction)
             } else if (users.current.health.duration?.timeunit?.value == "week" && users.current.health.duration?.count?.value!! >= 2) {
                 furhat.say("Though you were not in contact with a COVID-19 patient, you've been experiencing symptoms for over 2 weeks. I'd recommend you to take a PCR test.")
                 goto(AskToBookTest)

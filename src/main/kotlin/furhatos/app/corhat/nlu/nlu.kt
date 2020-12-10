@@ -250,7 +250,7 @@ class ListOfSymptom : ListEntity<Symptom>()
 
 class HealthCondition : EnumEntity() {
     override fun getEnum(lang: Language): List<String> {
-        return listOf("good: good, health, well")
+        return listOf("feel well: healthy, no symptoms, fine, well, asymptomatic")
     }
 }
 
@@ -262,7 +262,7 @@ class Symptom : EnumEntity() {
                 "cough: cough, dry cough",
                 "difficulty breathing: difficulty breathing, hard to breathe, can't breathe",
                 "fatigue: fatigue, tired, bad, feel bad, nausea, pain",
-                "healthy: healthy, no symptoms, fine, well, asymptomatic"
+                "feel well: healthy, no symptoms, fine, well, asymptomatic"
         )
     }
 }
