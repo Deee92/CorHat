@@ -101,7 +101,7 @@ val Interaction: State = state {
 }
 
 /** Dummy state for inheritance */
-val SubInteraction: State = state(parent = Questions) {
+val SubInteraction: State = state(parent = Interaction) {
     // TODO: Should this inherit Question or Interaction?
 }
 
