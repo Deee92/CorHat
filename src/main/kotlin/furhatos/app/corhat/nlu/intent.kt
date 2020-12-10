@@ -130,10 +130,13 @@ class AskSafetyMeasure : Intent() {
 
 class AskTestTypeIntent : Intent() {
     var test: Test? = null
+    var covid: Covid? = null
     override fun getExamples(lang: Language): List<String> {
         return listOf("What is a @test test",
                 "Tell me about the @test test",
+                "Tell me about the @covid test",
                 "What is @test",
+                "@covid test",
                 "@test test",
                 "@test"
         )

@@ -232,7 +232,7 @@ class Show_direction(val center: Centers? = null) : Intent() {
 
 class Test : EnumEntity() {
     override fun getEnum(lang: Language): List<String> {
-        return listOf("PCR: PCR, virus, corona, covid, covid-19, infection",
+        return listOf("PCR: PCR, infection",
                 "antibody: antibody, immunity"
         )
     }
@@ -301,6 +301,6 @@ class Duration(var count: Number? = null,
 
 class Covid : EnumEntity() {
     override fun getEnum(lang: Language): List<String> {
-        return listOf("COVID-19: covid, covid-19, covid 19, corona, corona virus, coronavirus, SARS COV 2")
+        return listOf("COVID-19: covid, covid-19, covid 19, corona, corona virus, coronavirus, virus, SARS COV 2")
     }
 }

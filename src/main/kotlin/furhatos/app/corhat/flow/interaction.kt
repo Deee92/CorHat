@@ -15,7 +15,9 @@ val Questions: State = state(parent = Interaction) {
                "It's an indication, but no guarantee for immunity.")
             reentry()
         } else {
-            furhat.say("A ${it.intent.test?.value} test determines if you are currently infected with COVID-19.")
+            var test = it.intent.test?.value
+            if (test == null) test = it.intent.covid?.value
+            furhat.say("A ${test} test determines if you are currently infected with COVID-19.")
             reentry()
         }
     }
@@ -193,13 +195,15 @@ val GetInformation: State = state(parent = Questions) {
     }
 }
 
-val TestInit: State = state(parent = SubInteraction) {
+val TestInit: State = state(parent = Questions) {
     onEntry {
-        random(furhat.say("Let's start with your current health condition. Can you please describe your symptoms?"),
-                furhat.say("I see, you want to take a test. How do you feel currently?")
+        random({ furhat.say("Let's start with your current health condition. Can you please describe your symptoms?") },
+                { furhat.say("I see, you want to take a test. How do you feel currently?") }
         )
         furhat.listen()
     }
+
+    onReentry { furhat.say("Please describe your symptoms freely.") }
 
     onResponse<DescribeHealthIntent> {
         users.current.health.adjoin(it.intent)

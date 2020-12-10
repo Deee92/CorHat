@@ -200,6 +200,10 @@ val DebugState = partialState {
         goto(Start2)
     }
 
+    onButton("Goto TestInit", id="goto TestInit") {
+        goto(TestInit)
+    }
+
     onButton("Goto ConfirmHealthStatus", id="goto ConfirmHealthStatus") {
         goto(ConfirmHealthStatus)
     }
