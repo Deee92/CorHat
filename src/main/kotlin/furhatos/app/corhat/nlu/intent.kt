@@ -60,17 +60,6 @@ open class DescribeHealthIntent : Intent(), TextGenerator {
     }
 }
 
-class AskTestTypeIntent : Intent() {
-    var test: Test? = null
-    override fun getExamples(lang: Language): List<String> {
-        return listOf("What is a @test test",
-                "Tell me about the @test test",
-                "@test test",
-                "@test"
-        )
-    }
-}
-
 class DescribeSymptomIntent : Intent() {
     var symptoms: ListOfSymptom? = null
     override fun getExamples(lang: Language): List<String> {
@@ -98,7 +87,8 @@ class RequestServiceOptions : Intent() {
         return listOf("what services do you have?",
                 "what can I do here?",
                 "what can you do for me?",
-                "what can you help me with?"
+                "can you help me with",
+                "how can you help"
         )
     }
 }
@@ -136,13 +126,33 @@ class AskSafetyMeasure : Intent() {
     }
 }
 
+class AskTestTypeIntent : Intent() {
+    var test: Test? = null
+    override fun getExamples(lang: Language): List<String> {
+        return listOf("What is a @test test",
+                "Tell me about the @test test",
+                "What is @test",
+                "@test test",
+                "@test"
+        )
+    }
+    override fun getNegativeExamples(lang: Language): List<String> {
+        return listOf("I want", "book")
+    }
+
+}
+
 class BookTest : Intent() {
     var covid: Covid? = null
+    var test: Test? = null
     override fun getExamples(lang: Language): List<String> {
         return listOf("I want to book a test",
                 "I want a test",
                 "I want to get tested for @covid"
         )
+    }
+    override fun getNegativeExamples(lang: Language): List<String> {
+        return listOf("tell me", "what is")
     }
 }
 
@@ -154,7 +164,8 @@ class GetInfo : Intent() {
                 "I need some general information",
                 "I need some general information about @covid",
                 "I want to have some general information about @covid",
-                "What is @covid?"
+                "What is @covid?",
+                "Tell me everything"
         )
     }
 }
