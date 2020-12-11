@@ -53,30 +53,33 @@ val Questions: State = state(parent = Interaction) {
 
     onEvent("RandomFact") {
         furhat.gesture(Gestures.Nod, async = true)
+        raise(AskSafetyMeasure())
 
+        /*
         randomLambda(
-                { furhat.say("Keep distance and stay safe.") },
-                {
-                    val test = randomItem("PCR","antibody")
-                    val utterance = "what is $test test?"
-                    val results = thisState.getIntentClassifier(lang = Language.ENGLISH_US).classify(utterance)
-                    if (results.isEmpty()) {
-                        reentry()
-                    }
-                    else {
-                        results.forEach {
-                            raise(it.intents.first())
-                        }
-                    }
+        { furhat.say("Keep distance and stay safe.") },
+        {
+            val test = randomItem("PCR","antibody")
+            val utterance = "what is $test test?"
+            val results = thisState.getIntentClassifier(lang = Language.ENGLISH_US).classify(utterance)
+            if (results.isEmpty()) {
+                reentry()
+            }
+            else {
+                results.forEach {
+                    raise(it.intents.first())
+                }
+            }
 
-                },
-                { raise(AskCovid19()) },
-                { raise(AskSymptoms()) },
-                { raise(GovHelpline()) },
-                { raise(AskSafetyMeasure()) },
-                /// { goto(TestInit) },
-                { furhat.say("There is no date set for vaccine distribution.") }
-        )
+        },
+        { raise(AskCovid19()) },
+        { raise(AskSymptoms()) },
+        { raise(GovHelpline()) },
+        { raise(AskSafetyMeasure()) },
+        /// { goto(TestInit) },
+        { furhat.say("There is no date set for vaccine distribution.") }
+)
+        */
         furhat.gesture(Gestures.Smile)
         furhat.listen()
     }
