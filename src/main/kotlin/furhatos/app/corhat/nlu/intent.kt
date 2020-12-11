@@ -89,7 +89,18 @@ class RequestServiceOptions : Intent() {
                 "what can I do here?",
                 "what can you do for me?",
                 "can you help me with",
+                "options",
+                "service",
                 "how can you help"
+        )
+    }
+}
+
+class RequestQuestion : Intent() {
+    override fun getExamples(lang: Language): List<String> {
+        return listOf("I have a question!",
+                "question",
+                "Can you answer a private question?"
         )
     }
 }
@@ -171,6 +182,7 @@ class GetInfo : Intent() {
     override fun getExamples(lang: Language): List<String> {
         return listOf("I'd like to learn more about @covid",
                 "general information",
+                "I want information",
                 "I need some general information",
                 "I need some general information about @covid",
                 "I want to have some general information about @covid",

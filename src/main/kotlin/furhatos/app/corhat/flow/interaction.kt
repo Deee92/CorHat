@@ -47,6 +47,9 @@ val Questions: State = state(parent = Interaction) {
     onResponse<GetInfo> {
         goto(RandomTalk)
     }
+    onResponse<RequestQuestion> {
+        goto(GetInformation)
+    }
 
     onEvent("RandomFact") {
         furhat.gesture(Gestures.Nod, async = true)
