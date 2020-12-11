@@ -10,8 +10,8 @@ class City : EnumEntity(stemming = true, speechRecPhrases = true) {
         return listOf("Stockholm",
                 "Linkoping: Linköping, linkoping",
                 "Gothenburg: Gothenburg, Goteborg, Göteborg",
-                "Uppsala: Uppsala, Uppsaala",
-                "Lund: Lund, Loond, Malmö, Malmoe, Malmo")
+                "Uppsala: Uppsala, Uppsaala, Upsala",
+                "Lund: Lund, Loond, learned, Malmö, Malmoe, Malmo")
     }
 }
 
@@ -256,7 +256,7 @@ class HealthCondition : EnumEntity() {
 
 class Symptom : EnumEntity() {
     override fun getEnum(lang: Language): List<String> {
-        return listOf("head ache: head ache, headache, pain in head",
+        return listOf("headache: head ache, headache, pain in head",
                 "sore throat: sore throat, dry throat, throat pain",
                 "fever: fever, sick, high temperature, unwell, illness, ill",
                 "cough: cough, dry cough",

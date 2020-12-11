@@ -149,10 +149,6 @@ val PleaseHold: State = state {
 }
 
 val DebugState = partialState {
-    onExit {
-        println("onExit debug " + users.current.dump())
-    }
-
     onResponse("print user", "producer", "print juicer") {
         println(users.current.dump())
         furhat.say("user printed")

@@ -148,7 +148,10 @@ val RandomTalk: State = state(parent = Questions) {
     }
 
     onReentry {
-        furhat.ask("Want another fact?")
+        randomLambda(
+                { furhat.ask("Want another fact?") },
+                { furhat.ask("Anything more?") }
+        )
     }
 
     onResponse<No> {
@@ -161,6 +164,7 @@ val RandomTalk: State = state(parent = Questions) {
         raise("RandomFact")
     }
 }
+
 
 val ChooseService: State = state(parent = Questions) {
     onEntry { furhat.ask("I can help you book a test for COVID-19. I can also share general information about COVID-19.") }
@@ -397,7 +401,7 @@ val GiveAddress: State = state(parent = Interaction) {
         furhat.ask("Do you want me to help with the directions to ${a}?")
     }
     onResponse<Yes> {
-        furhat.say("Alright! To get to ${a}, you can follow ${Center_Direction(a?.value).optionsToText()}")
+        furhat.say("Alright! To get to ${a}, you can follow ${Center_Direction(a?.value).optionsToText()}.")
         goto(EndInteraction)
     }
     onResponse<No> {

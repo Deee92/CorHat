@@ -109,7 +109,8 @@ class AskSymptoms : Intent() {
     var covid: Covid? = null
     override fun getExamples(lang: Language): List<String> {
         return listOf("what are the symptoms of @covid?",
-                "what common symptoms do we have for @covid?",
+                "symptoms",
+                "what common symptoms do we have?",
                 "what symptoms are common for @covid?"
         )
     }
@@ -124,6 +125,7 @@ class AskSafetyMeasure : Intent() {
                 "How can I be safe from @covid?",
                 "How to protect myself from @covid?",
                 "How do I protect myself from @covid?",
+                "avoid being infected",
                 "What can I do to avoid getting infected?"
         )
     }
@@ -153,6 +155,8 @@ class BookTest : Intent() {
     var test: Test? = null
     override fun getExamples(lang: Language): List<String> {
         return listOf("I want to book a test",
+                "do you think I should take a test?",
+                "take a test",
                 "I want a test",
                 "I want to get tested for @covid"
         )
