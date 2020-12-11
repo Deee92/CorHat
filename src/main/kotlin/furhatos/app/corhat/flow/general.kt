@@ -8,43 +8,7 @@ import furhatos.nlu.Response
 import furhatos.util.*
 import java.io.File
 
-val Idle: State = state {
-    include(DebugState)
-
-    init {
-        val logFile = File("logs/flowlogger.txt") // Under skill directory
-        flowLogger.start(logFile) // Start the logger
-        /// TODO: Worse?
-        // LogisticMultiIntentClassifier.setAsDefault()
-        furhat.param.noSpeechTimeout = 10000
-
-        furhat.setVoice(Language.ENGLISH_US, Gender.MALE)
-        // TODO: Better voice?
-        // furhat.setVoice(Language.ENGLISH_GB, "Brian", Gender.MALE)
-        send("LookAround")
-    }
-
-    onEntry {
-        furhat.attendNobody()
-    }
-
-    onEvent("LookAround") {
-        furhat.gesture(Gestures.Shake)
-        if (users.count > 0) {
-            furhat.attend(users.random)
-            goto(Start)
-        } else {
-            furhat.gesture(Gestures.Smile)
-        }
-    }
-
-    onUserEnter {
-        furhat.attend(it)
-        goto(Start)
-    }
-
-    // Note: There is no speech input in this state.
-}
+// Idle state is found at the end of the file.
 
 val Interaction: State = state {
     var silences = 0  // This is not per user, instead per state.
@@ -67,6 +31,15 @@ val Interaction: State = state {
 
     onUserEnter(instant = true) {
         furhat.glance(it)
+    }
+
+    onEvent("rickroll") {
+        val staccato = "2ms"
+        val rickroll = """Never gonna ${furhat.voice.emphasis("give")}${furhat.voice.pause(staccato)} 
+            you${furhat.voice.pause(staccato)} up! 
+            Never gonna ${furhat.voice.emphasis("let")}${furhat.voice.pause(staccato)} 
+            you${furhat.voice.pause(staccato)} down!"""
+        furhat.say(furhat.voice.prosody(rickroll, rate = 1.20, pitch = "high"))
     }
 
     // Final fallback for non-recognized stuff
@@ -122,12 +95,7 @@ val PleaseHold: State = state {
     onReentry {
         if (!users.current.rolled) {
             users.current.rolled = true
-            val staccato = "2ms"
-            val rickroll = """Never gonna ${furhat.voice.emphasis("give")}${furhat.voice.pause(staccato)} 
-                you${furhat.voice.pause(staccato)} up! 
-                Never gonna ${furhat.voice.emphasis("let")}${furhat.voice.pause(staccato)} 
-                you${furhat.voice.pause(staccato)} down!"""
-            furhat.say(furhat.voice.prosody(rickroll, rate = 1.20, pitch = "high"))
+            send("rickrolled")
         }
         random (
                 { furhat.say("Oh, sorry, forgot you were here!") },
@@ -216,4 +184,45 @@ val DebugState = partialState {
         goto(RandomTalk)
     }
 
+    onButton("Do RickRoll", id="goto RickRoll") {
+        send("rickroll")
+    }
+
 }
+
+val Idle: State = state(parent = Interaction) {
+    include(DebugState)
+
+    init {
+        val logFile = File("logs/flowlogger.txt") // Under skill directory
+        flowLogger.start(logFile) // Start the logger
+        furhat.param.noSpeechTimeout = 10000
+
+        furhat.setVoice(Language.ENGLISH_US, Gender.MALE)
+        // TODO: Better voice?
+        // furhat.setVoice(Language.ENGLISH_US, "Matthew", Gender.MALE)
+        send("LookAround")
+    }
+
+    onEntry {
+        furhat.attendNobody()
+    }
+
+    onEvent("LookAround") {
+        furhat.gesture(Gestures.Shake)
+        if (users.count > 0) {
+            furhat.attend(users.random)
+            goto(Start)
+        } else {
+            furhat.gesture(Gestures.Smile)
+        }
+    }
+
+    onUserEnter {
+        furhat.attend(it)
+        goto(Start)
+    }
+
+    // Note: There is no speech input in this state.
+}
+
