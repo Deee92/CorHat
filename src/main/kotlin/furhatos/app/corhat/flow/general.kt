@@ -198,9 +198,9 @@ val Idle: State = state(parent = Interaction) {
         flowLogger.start(logFile) // Start the logger
         furhat.param.noSpeechTimeout = 10000
 
-        furhat.setVoice(Language.ENGLISH_US, Gender.MALE)
+        /// furhat.setVoice(Language.ENGLISH_US, Gender.MALE)
         // TODO: Better voice?
-        // furhat.setVoice(Language.ENGLISH_US, "Matthew", Gender.MALE)
+        furhat.setVoice(Language.ENGLISH_US, "Matthew", Gender.MALE)
         send("LookAround")
     }
 
